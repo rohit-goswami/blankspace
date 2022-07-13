@@ -1,0 +1,38 @@
+specVersion: 0.0.4
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: SBT
+    network: mumbai
+    source:
+      address: "0xE43179E58F29A6826C6BD26A88D23a960daABcEB"
+      abi: SBT
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - ApprovalForAll
+        - Attest
+        - OwnershipTransferred
+        - Revoke
+        - Transfer
+      abis:
+        - name: SBT
+          file: ./abis/SBT.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: Attest(indexed address,indexed uint256)
+          handler: handleAttest
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: Revoke(indexed address,indexed uint256)
+          handler: handleRevoke
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+      file: ./src/sbt.ts
