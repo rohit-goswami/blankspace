@@ -8,9 +8,11 @@
     "compile": "cd packages/hardhat && npx hardhat compile",
     "deploy": "cd packages/hardhat && npx hardhat run scripts/deploy.js --network localhost",
     "test": "cd packages/hardhat && npx hardhat test"
-
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@openzeppelin/contracts-upgradeable": "^4.7.0"
+  }
 }
