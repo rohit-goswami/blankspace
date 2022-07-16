@@ -1,8 +1,9 @@
 import React from 'react';
 import styled from '@emotion/styled';
+import { Link } from 'react-router-dom';
 
 // Components
-import MetaMask from './MetaMask';
+import MetaMask from '../ui/MetaMask';
 
 // Styled
 const HeaderStyled = styled.header`
@@ -31,13 +32,55 @@ const DivFlexCenter = styled.div`
     padding: 0.7rem 0;
 `;
 
+const Title = styled.p`
+    font-size: 2.6rem;
+    margin: 0 1rem;
+    color: white;
+    text-decoration: none;
+`;
+
+const Nav = styled.nav`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
+
+const NavItem = styled(Link)`
+    color: white;
+    text-decoration: none;
+    font-size: 2.2rem;
+    display: block;
+
+    @media (min-width: 768px) {
+        display: inline-block;
+        margin-right: 2rem;
+        font-size: 1.8rem;
+
+        &:last-of-type {
+            margin: 0;
+        }
+    }
+
+    &:hover {
+        color: black;
+    }
+`;
+
 const Header = () => {
     return (
         <HeaderStyled>
             <HeaderContainer>
-                <DivFlexCenter id='logo'>
-                    <img src='./logo.svg' alt='Logo' width={50} />
-                </DivFlexCenter>
+                <Link to='/' style={{ textDecoration: 'none' }}>
+                    <DivFlexCenter id='logo'>
+                        <img src='./logo.svg' alt='Logo' width={50} />
+                        <Title>blankSpace</Title>
+                    </DivFlexCenter>
+                </Link>
+
+                <Nav>
+                    <NavItem to='/'>Home</NavItem>
+                    <NavItem to='/test-arena'>Test Arena</NavItem>
+                </Nav>
 
                 <DivFlexCenter>
                     <MetaMask />
