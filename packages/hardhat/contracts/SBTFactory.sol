@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/proxy/Clones.sol";
 contract FactoryClone {
     address immutable tokenImplementation;
 
-    constructor() public {
+    constructor() {
         tokenImplementation = address(new SBT());
     }
 

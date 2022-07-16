@@ -1,20 +1,29 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.4;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 
-contract SBT is ERC721, ERC721URIStorage, Ownable {
-    using Counters for Counters.Counter;
+contract SBT is Initializable, ERC721Upgradeable, ERC721URIStorageUpgradeable, OwnableUpgradeable {
+    
+    using CountersUpgradeable for CountersUpgradeable.Counter;
 
-    Counters.Counter private _tokenIdCounter;
+    CountersUpgradeable.Counter private _tokenIdCounter;
+
     event Attest(address indexed to, uint256 indexed tokenId);
     event Revoke(address indexed to, uint256 indexed tokenId);
+    
+    function initialize(string memory _name, string memory _symbol) initializer public {
+        __ERC721_init(_name,_symbol);
+        __ERC721URIStorage_init();
+        __Ownable_init();
+    }
 
-    constructor() ERC721("Solidity-Basics", "SBT") {}
-    function safeMint(address to, string memory uri) public onlyOwner {
+
+    function mint(address to, string memory uri)  public onlyOwner {
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
@@ -34,21 +43,26 @@ contract SBT is ERC721, ERC721URIStorage, Ownable {
         require(from == address(0) || to == address(0 ), "you can't transfer this SBT token");
     }
 
-     function _afterTokenTransfer(address from, address to, uint256 tokenId ) internal override virtual {
+    function _afterTokenTransfer(address from, address to, uint256 tokenId ) internal override virtual {
        if (from == address(0)){
         emit Attest(to, tokenId);
        } else if (to == address(0)){
         emit Revoke(to, tokenId);
        }
-     }
-    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+    }
+
+
+    function _burn(uint256 tokenId)
+        internal
+        override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
+    {
         super._burn(tokenId);
     }
 
     function tokenURI(uint256 tokenId)
         public
         view
-        override(ERC721, ERC721URIStorage)
+        override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
         returns (string memory)
     {
         return super.tokenURI(tokenId);
