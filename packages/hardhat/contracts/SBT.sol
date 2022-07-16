@@ -40,7 +40,7 @@ contract SBT is Initializable, ERC721Upgradeable, ERC721URIStorageUpgradeable, O
     }
 
     function _beforeTokenTransfer(address from, address to, uint256 tokenId) internal override virtual {
-        require(from == address(0) || to == address(0 ), "you can't transfer this SBT token");
+        require(from == address(0) || to == address(0), "you can't transfer this SBT token");
     }
 
     function _afterTokenTransfer(address from, address to, uint256 tokenId ) internal override virtual {
