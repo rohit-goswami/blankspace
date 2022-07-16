@@ -35,7 +35,7 @@ contract ImageRegister {
         require(bytes(_title).length > 0 && bytes(_title).length <= 256 );
         require(bytes(_description).length < 1024 );
     
-        uint256 uploadedOn = now;
+        uint256 uploadedOn = block.timestamp;
         Image memory image = Image(
             _ipfsHash,
             _title,
@@ -56,7 +56,7 @@ contract ImageRegister {
         _success = true;
     }
 
-    function getImageCount(address _owner) public returns (uint256){
+    function getImageCount(address _owner) view public returns (uint256){
         require(_owner != address(0));
         return ownerToImages[_owner].length;
     }
