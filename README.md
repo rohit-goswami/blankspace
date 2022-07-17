@@ -31,3 +31,7 @@ npm run node
 ```
 npm run deploy
 ```
+7. Run react-app from packages directory
+```
+npm run start
+```
