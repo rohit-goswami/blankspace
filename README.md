@@ -27,7 +27,7 @@ npm run compile
 ```
 npm run node
 ```
-6. Deploy contracts to localhost
+6. Deploy contracts to local blockchain
 ```
 npm run deploy
 ```
