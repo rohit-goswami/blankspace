@@ -27,7 +27,7 @@ npm run compile
 ```
 npm run node
 ```
-6. Deploy contracts to locahost
+6. Deploy contracts to localhost
 ```
 npm run deploy
 ```
