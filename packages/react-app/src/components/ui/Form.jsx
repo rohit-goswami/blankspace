@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 export const Form = styled.form`
     max-width: 600px;
     width: 95%auto;
-    margin: 5rem auto 0 auto;
+    margin: 5rem auto 4rem auto;
 
     fieldset {
         margin: 2rem 0;
