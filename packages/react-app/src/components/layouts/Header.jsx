@@ -30,6 +30,10 @@ const DivFlexCenter = styled.div`
     justify-content: center;
     margin-top: 0;
     padding: 0.7rem 0;
+
+    img {
+        border-radius: .5rem;
+    }
 `;
 
 const Title = styled.p`
