@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 
 // Components
+import { Button } from '../ui/Button';
 import SearchBar from '../ui/SearchBar';
 
 // Styled
@@ -19,16 +20,6 @@ const Container = styled.div`
     }
 `;
 
-const CreateTestButton = styled.button`
-    padding: 1rem 2rem;
-    border-radius: 0.4rem;
-    font-size: 1.6rem;
-
-    &:hover {
-        cursor: pointer;
-    }
-`;
-
 const TestArenaBar = ({ onSearch }) => {
     // Hook useNavigate
     const navigate = useNavigate();
@@ -42,7 +33,7 @@ const TestArenaBar = ({ onSearch }) => {
         <Container>
             <SearchBar onChange={onSearch} />
 
-            <CreateTestButton onClick={handleCreateTest}>Create Test</CreateTestButton>
+            <Button onClick={handleCreateTest}>Create Test</Button>
         </Container>
     );
 };
