@@ -10,13 +10,6 @@ const Container = styled.div`
     grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     grid-column-gap: 1rem;
     grid-row-gap: 1rem;
-    max-width: 120rem;
-    margin: 0 auto;
-    padding: 0 2rem;
-
-    @media (min-width: 1250px) {
-        padding: 0;
-    }
 `;
 
 const tests = [

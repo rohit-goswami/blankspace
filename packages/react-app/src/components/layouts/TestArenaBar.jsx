@@ -10,14 +10,7 @@ import SearchBar from '../ui/SearchBar';
 const Container = styled.div`
     display: flex;
     justify-content: space-between;
-    width: 100%;
-    max-width: 120rem;
-    padding: 1.5rem 2rem;
-    margin: 0 auto;
-
-    @media (min-width: 1250px) {
-        padding: 1.5rem 0;
-    }
+    padding: 1.5rem 0;
 `;
 
 const TestArenaBar = ({ onSearch }) => {

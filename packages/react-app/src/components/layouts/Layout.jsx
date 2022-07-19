@@ -1,14 +1,23 @@
 import React from 'react';
+import styled from '@emotion/styled';
 
 // Components
 import Header from './Header';
+
+// Styled
+const Main = styled.main`
+    max-width: 120rem;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 2rem;
+`;
 
 const Layout = ({ children }) => {
     return (
         <>
             <Header />
 
-            <main>{children}</main>
+            <Main>{children}</Main>
         </>
     );
 };
