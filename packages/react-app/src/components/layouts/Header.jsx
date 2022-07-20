@@ -16,11 +16,12 @@ const HeaderContainer = styled.div`
     width: 100%;
     margin: 0;
     padding: 0 2rem;
+    max-width: 120rem;
+    margin: 0 auto;
 
     @media (min-width: 768px) {
         display: flex;
         justify-content: space-between;
-        padding: 0 5rem;
     }
 `;
 
@@ -32,7 +33,7 @@ const DivFlexCenter = styled.div`
     padding: 0.7rem 0;
 
     img {
-        border-radius: .5rem;
+        border-radius: 0.5rem;
     }
 `;
 
@@ -76,7 +77,7 @@ const Header = () => {
             <HeaderContainer>
                 <Link to='/' style={{ textDecoration: 'none' }}>
                     <DivFlexCenter id='logo'>
-                        <img src='./logo.svg' alt='Logo' width={50} />
+                        <img src='/logo.svg' alt='Logo' width={50} />
                         <Title>blankSpace</Title>
                     </DivFlexCenter>
                 </Link>
