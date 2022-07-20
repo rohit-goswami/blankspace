@@ -1,8 +1,8 @@
 import { Web3Storage, File } from 'web3.storage';
 
 function getAccessToken() {
-    console.log('Token', process.env.REACT_APP_TOKEN);
-    return process.env.REACT_APP_TOKEN;
+    console.log('Token', process.env.WEB3STORAGE_TOKEN);
+    return process.env.WEB3STORAGE_TOKEN;
 }
 
 function makeStorageClient() {

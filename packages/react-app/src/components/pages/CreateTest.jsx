@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { v4 as uuidv4 } from 'uuid';
-
 
 // Material UI
 import EditIcon from '@mui/icons-material/Edit';
@@ -18,6 +17,21 @@ import { Form, Field, InputSubmit } from '../ui/Form';
 import { Button } from '../ui/Button';
 
 // Styled
+const Image = styled.img`
+    width: 100%;
+    max-width: 30rem;
+    margin: 0 auto;
+
+    @media (min-width: 768px) {
+        flex: 1;
+        width: 80%;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+`;
+
 const OptionsTitleContainer = styled.div`
     display: flex;
     flex-direction: row;
@@ -85,11 +99,15 @@ const CreateTest = () => {
     // Hook useNavigate
     const navigate = useNavigate();
 
+    // Hook useRef
+    const inputFileRef = useRef(null);
+
     // States
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [level, setLevel] = useState(null);
     const [time, setTime] = useState(30);
+    const [file, setFile] = useState(undefined);
     const [questions, setQuestions] = useState([]);
     const [editOption, setEditOption] = useState(null);
 
@@ -150,8 +168,6 @@ const CreateTest = () => {
             questions,
         };
 
-
-
         console.log(test);
 
         // storeFiles(test);
@@ -162,6 +178,17 @@ const CreateTest = () => {
     const handleChangeLevel = e => {
         const newLevel = levels.find(item => item.uid === e.target.value);
         setLevel(newLevel);
+    };
+
+    const handleUploadImage = e => {
+        e.preventDefault();
+        inputFileRef.current.click();
+    };
+
+    const handleChangeImage = e => {
+        if (e.target.files.length > 0) {
+            setFile(e.target.files[0]);
+        }
     };
 
     const handleChangeQuestion = e => {
@@ -410,6 +437,23 @@ const CreateTest = () => {
                     <Field>
                         <label htmlFor='time'>Time</label>
                         <input id='time' type='number' value={time} onChange={e => setTime(e.target.value)} />
+                    </Field>
+
+                    <Field>
+                        <label htmlFor='image'>Image</label>
+                        <input
+                            id='image'
+                            ref={inputFileRef}
+                            type='file'
+                            accept='image/*'
+                            onChange={handleChangeImage}
+                            style={{ display: 'none' }}
+                        />
+                        {file ? (
+                            <Image src={URL.createObjectURL(file)} alt='Test Token' onClick={handleUploadImage} />
+                        ) : (
+                            <Button onClick={handleUploadImage}>Upload Image</Button>
+                        )}
                     </Field>
                 </fieldset>
                 <fieldset>
