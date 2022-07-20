@@ -1,13 +1,12 @@
+
+
 const hre = require("hardhat");
 
 async function main() {
 
-  const Sbt = await hre.ethers.getContractFactory("SBT");
+  const Sbt = await ethers.getContractFactory("Test");
   const sbt = await Sbt.deploy();
-
   await sbt.deployed();
-
-
 
   console.log("contract deployed at :", sbt.address);
 }
