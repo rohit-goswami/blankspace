@@ -1,22 +1,25 @@
 import { Web3Storage, File } from 'web3.storage';
 
 function getAccessToken() {
-    return process.env.TOKEN;
+    console.log('Token', process.env.REACT_APP_TOKEN);
+    return process.env.REACT_APP_TOKEN;
 }
 
 function makeStorageClient() {
     return new Web3Storage({ token: getAccessToken() });
 }
 
-async function storeFiles(content) {
+export async function storeFiles(content) {
     const client = makeStorageClient();
     const myJSON = JSON.stringify(content);
+    console.log('myJSON', myJSON);
     const file = new File([myJSON], 'metadata.json', { type: 'json' });
     const cid = await client.put([file]);
+    console.log('cid', cid);
     return cid;
 }
 
-async function retrieveFiles(cid) {
+export async function retrieveFiles(cid) {
     const client = makeStorageClient();
     const res = await client.get(cid);
     console.log(`Got a response! [${res.status}] ${res.statusText}`);
@@ -76,7 +79,7 @@ const content = {
         },
     ],
 };
-const cid = await storeFiles(content);
-console.log(cid);
-const file = await retrieveFiles(`${cid}`); // https://ipfs.io/ipfs/cid
-console.log(file);
+// const cid = await storeFiles(content);
+// console.log(cid);
+// const file = await retrieveFiles(`${cid}`); // https://ipfs.io/ipfs/cid
+// console.log(file);

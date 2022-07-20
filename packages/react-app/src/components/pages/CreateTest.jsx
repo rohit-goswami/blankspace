@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
+import { v4 as uuidv4 } from 'uuid';
 
 // Material UI
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
+
+// Services
+import { storeFiles, retrieveFiles } from '../../services/ipfs';
 
 // Components
 import Layout from '../layouts/Layout';
@@ -59,19 +63,19 @@ const FooterQuestion = styled.div`
 
 const levels = [
     {
-        uid: 1,
+        uid: '1',
         name: 'Basic',
     },
     {
-        uid: 2,
+        uid: '2',
         name: 'Intermediate',
     },
     {
-        uid: 3,
+        uid: '3',
         name: 'Advanced',
     },
     {
-        uid: 4,
+        uid: '4',
         name: 'Expert',
     },
 ];
@@ -106,22 +110,26 @@ const CreateTest = () => {
         setQuestions([
             ...questions,
             {
+                uid: uuidv4(),
                 order: order,
-                question: `Question ${order}?`,
+                caption: `Question ${order}?`,
                 singleAnswer: true,
                 options: [
                     {
+                        uid: uuidv4(),
                         order: 1,
-                        option: 'Option 1',
+                        caption: 'Option 1',
                         correct: true,
                     },
                     {
+                        uid: uuidv4(),
                         order: 2,
-                        option: 'Option 2',
+                        caption: 'Option 2',
                     },
                     {
+                        uid: uuidv4(),
                         order: 3,
-                        option: 'Option 3',
+                        caption: 'Option 3',
                     },
                 ],
             },
@@ -132,6 +140,7 @@ const CreateTest = () => {
         e.preventDefault();
 
         const test = {
+            uid: uuidv4(),
             owner: '',
             title,
             description,
@@ -142,29 +151,31 @@ const CreateTest = () => {
 
         console.log(test);
 
+        // storeFiles(test);
+
         navigate('/test-arena');
     };
 
     const handleChangeLevel = e => {
-        const newLevel = levels.find(item => item.uid === parseInt(e.target.value));
+        const newLevel = levels.find(item => item.uid === e.target.value);
         setLevel(newLevel);
     };
 
     const handleChangeQuestion = e => {
-        const order = parseInt(e.target.id.split('#')[1]);
-        const question = questions.find(item => item.order === order);
+        const questionId = e.target.id.split('#')[1];
+        const question = questions.find(item => item.uid === questionId);
 
         const newQuestion = {
             ...question,
-            question: e.target.value,
+            caption: e.target.value,
         };
 
-        setQuestions([...questions.filter(item => item.order !== order), newQuestion]);
+        setQuestions([...questions.filter(item => item.uid !== questionId), newQuestion]);
     };
 
     const handleChangeType = e => {
-        const order = parseInt(e.target.id.split('#')[1]);
-        const question = questions.find(item => item.order === order);
+        const questionId = e.target.id.split('#')[1];
+        const question = questions.find(item => item.uid === questionId);
 
         if (e.target.value === 'single') {
             question.singleAnswer = true;
@@ -173,10 +184,10 @@ const CreateTest = () => {
             const correctOptions = question.options.filter(item => item.correct);
 
             if (correctOptions.length > 1) {
-                const correctOptionOrder = Math.min(...correctOptions.map(item => item.order));
+                const correctOptionId = Math.min(...correctOptions.map(item => item.uid));
 
                 question.options = question.options.map(item => {
-                    if (item.order !== correctOptionOrder) {
+                    if (item.order !== correctOptionId) {
                         delete item.correct;
                     }
 
@@ -188,14 +199,14 @@ const CreateTest = () => {
             question.multipleAnswer = true;
         }
 
-        setQuestions([...questions.filter(item => item.order !== order), question]);
+        setQuestions([...questions.filter(item => item.uid !== questionId), question]);
     };
 
     const handleChangeCorrectOption = e => {
-        const orderQuestion = parseInt(e.target.id.split('#')[1]);
-        const orderOption = parseInt(e.target.id.split('#')[2]);
-        const question = questions.find(item => item.order === orderQuestion);
-        const option = question.options.find(item => item.order === orderOption);
+        const questionId = e.target.id.split('#')[1];
+        const optionId = e.target.id.split('#')[2];
+        const question = questions.find(item => item.uid === questionId);
+        const option = question.options.find(item => item.uid === optionId);
 
         if (question.singleAnswer) {
             if (!option.correct) {
@@ -205,9 +216,7 @@ const CreateTest = () => {
                 option.correct = true;
 
                 question.options = [
-                    ...question.options.filter(
-                        item => item.order !== option.order && item.order !== oldCorrectOption.order
-                    ),
+                    ...question.options.filter(item => item.uid !== option.uid && item.uid !== oldCorrectOption.uid),
                     option,
                     oldCorrectOption,
                 ];
@@ -221,13 +230,13 @@ const CreateTest = () => {
                 if (correctOptions.length > 1) {
                     delete option.correct;
 
-                    question.options = [...question.options.filter(item => item.order !== option.order), option];
+                    question.options = [...question.options.filter(item => item.uid !== option.uid), option];
                 } else {
                     return;
                 }
             } else {
                 question.options = [
-                    ...question.options.filter(item => item.order !== option.order),
+                    ...question.options.filter(item => item.uid !== option.uid),
                     {
                         ...option,
                         correct: true,
@@ -238,21 +247,21 @@ const CreateTest = () => {
             return;
         }
 
-        setQuestions([...questions.filter(item => item.order !== orderQuestion), question]);
+        setQuestions([...questions.filter(item => item.uid !== questionId), question]);
     };
 
     const handleChangeOption = e => {
-        const orderQuestion = parseInt(e.target.id.split('#')[1]);
-        const orderOption = parseInt(e.target.id.split('#')[2]);
-        const question = questions.find(item => item.order === orderQuestion);
-        const option = question.options.find(item => item.order === orderOption);
+        const questionId = e.target.id.split('#')[1];
+        const optionId = e.target.id.split('#')[2];
+        const question = questions.find(item => item.uid === questionId);
+        const option = question.options.find(item => item.uid === optionId);
         option.option = e.target.value;
 
         setQuestions([
-            ...questions.filter(item => item.order !== orderQuestion),
+            ...questions.filter(item => item.uid !== questionId),
             {
                 ...question,
-                options: [...question.options.filter(item => item.order !== orderOption), option],
+                options: [...question.options.filter(item => item.uid !== optionId), option],
             },
         ]);
     };
@@ -265,23 +274,23 @@ const CreateTest = () => {
 
     const handleEditOption = e => {
         const id = e.target.id || e.target.parentElement.id;
-        const orderQuestion = parseInt(id.split('#')[1]);
-        const orderOption = parseInt(id.split('#')[2]);
+        const questionId = id.split('#')[1];
+        const optionId = id.split('#')[2];
 
         setEditOption({
-            question: orderQuestion,
-            option: orderOption,
+            question: questionId,
+            option: optionId,
         });
     };
 
     const handleDeleteOption = e => {
         const id = e.target.id || e.target.parentElement.id;
-        const orderQuestion = parseInt(id.split('#')[1]);
-        const orderOption = parseInt(id.split('#')[2]);
-        const question = questions.find(item => item.order === orderQuestion);
+        const questionId = id.split('#')[1];
+        const optionId = id.split('#')[2];
+        const question = questions.find(item => item.uid === questionId);
 
         if (question.options.length > 2) {
-            const option = question.options.find(item => item.order === orderOption);
+            const option = question.options.find(item => item.uid === optionId);
 
             if (option.correct && question.options.filter(item => item.correct).length === 1) {
                 const newCorrectOption = question.options.filter(item => !item.correct)[0];
@@ -289,13 +298,13 @@ const CreateTest = () => {
                 newCorrectOption.order = 1;
 
                 setQuestions([
-                    ...questions.filter(item => item.order !== orderQuestion),
+                    ...questions.filter(item => item.uid !== questionId),
                     {
                         ...question,
                         options: [
                             newCorrectOption,
                             ...question.options
-                                .filter(item => item.order !== orderOption && item.order !== newCorrectOption.order)
+                                .filter(item => item.uid !== optionId && item.uid !== newCorrectOption.uid)
                                 .map((item, idx) => ({
                                     ...item,
                                     order: idx + 2,
@@ -305,11 +314,11 @@ const CreateTest = () => {
                 ]);
             } else {
                 setQuestions([
-                    ...questions.filter(item => item.order !== orderQuestion),
+                    ...questions.filter(item => item.uid !== questionId),
                     {
                         ...question,
                         options: question.options
-                            .filter(item => item.order !== orderOption)
+                            .filter(item => item.uid !== optionId)
                             .map((item, idx) => ({
                                 ...item,
                                 order: idx + 1,
@@ -323,24 +332,25 @@ const CreateTest = () => {
     const handleAddOption = e => {
         e.preventDefault();
 
-        const order = parseInt(e.target.id.split('#')[1]);
-        const question = questions.find(item => item.order === order);
+        const questionId = e.target.id.split('#')[1];
+        const question = questions.find(item => item.uid === questionId);
 
         question.options.push({
+            uid: uuidv4(),
             order: question.options.length + 1,
-            option: `Option ${question.options.length + 1}`,
+            caption: `Option ${question.options.length + 1}`,
         });
 
-        setQuestions([...questions.filter(item => item.order !== order), question]);
+        setQuestions([...questions.filter(item => item.uid !== questionId), question]);
     };
 
     const handleDeleteQuestion = e => {
         e.preventDefault();
 
-        const order = parseInt(e.target.id.split('#')[1]);
+        const questionId = e.target.id.split('#')[1];
         setQuestions(
             questions
-                .filter(item => item.order !== order)
+                .filter(item => item.uid !== questionId)
                 .map((question, idx) => ({
                     ...question,
                     order: idx + 1,
@@ -405,15 +415,15 @@ const CreateTest = () => {
                     {questions
                         .sort((a, b) => (a.order > b.order ? 1 : -1))
                         .map(question => (
-                            <fieldset key={question.order}>
+                            <fieldset key={question.uid}>
                                 <legend>{question.order}</legend>
 
                                 <Field>
-                                    <label htmlFor={`question#${question.order}`}>Question</label>
+                                    <label htmlFor={`question#${question.uid}`}>Question</label>
                                     <input
-                                        id={`question#${question.order}`}
+                                        id={`question#${question.uid}`}
                                         type='text'
-                                        value={question.question}
+                                        value={question.caption}
                                         autoComplete='off'
                                         onChange={handleChangeQuestion}
                                     />
@@ -424,25 +434,25 @@ const CreateTest = () => {
 
                                     <div>
                                         <input
-                                            id={`single#${question.order}`}
+                                            id={`single#${question.uid}`}
                                             type='radio'
                                             value='single'
-                                            name={`options${question.order}`}
+                                            name={`options${question.uid}`}
                                             defaultChecked
                                             onChange={handleChangeType}
                                         />
-                                        <label htmlFor={`single#${question.order}`}>Single Answer</label>
+                                        <label htmlFor={`single#${question.uid}`}>Single Answer</label>
                                     </div>
 
                                     <div>
                                         <input
-                                            id={`multiple#${question.order}`}
+                                            id={`multiple#${question.uid}`}
                                             type='radio'
                                             value='multiple'
-                                            name={`options${question.order}`}
+                                            name={`options${question.uid}`}
                                             onChange={handleChangeType}
                                         />
-                                        <label htmlFor={`multiple#${question.order}`}>Multiple Answer</label>
+                                        <label htmlFor={`multiple#${question.uid}`}>Multiple Answer</label>
                                     </div>
                                 </OptionsTitleContainer>
 
@@ -450,34 +460,34 @@ const CreateTest = () => {
                                     {question.options
                                         .sort((a, b) => (a.order > b.order ? 1 : -1))
                                         .map(option => (
-                                            <OptionContainer key={option.order}>
+                                            <OptionContainer key={option.uid}>
                                                 <input
-                                                    id={`check#${question.order}#${option.order}`}
+                                                    id={`check#${question.uid}#${option.uid}`}
                                                     type='checkbox'
                                                     checked={Boolean(option.correct)}
                                                     onChange={handleChangeCorrectOption}
                                                 />
 
                                                 {editOption &&
-                                                editOption.question === question.order &&
-                                                editOption.option === option.order ? (
+                                                editOption.question === question.uid &&
+                                                editOption.option === option.uid ? (
                                                     <input
-                                                        id={`check#${question.order}#${option.order}`}
+                                                        id={`check#${question.uid}#${option.uid}`}
                                                         type='text'
-                                                        value={option.option}
+                                                        value={option.caption}
                                                         onChange={handleChangeOption}
                                                         onKeyDown={handleKeyDownOption}
                                                         onBlur={() => setEditOption(null)}
                                                     />
                                                 ) : (
-                                                    <label htmlFor={`check#${question.order}#${option.order}`}>
-                                                        {option.option}
+                                                    <label htmlFor={`check#${question.uid}#${option.uid}`}>
+                                                        {option.caption}
                                                     </label>
                                                 )}
 
                                                 <div className='icons'>
                                                     <EditIcon
-                                                        id={`editOption#${question.order}#${option.order}`}
+                                                        id={`editOption#${question.uid}#${option.uid}`}
                                                         style={{
                                                             fontSize: 20,
                                                             cursor: 'pointer',
@@ -486,7 +496,7 @@ const CreateTest = () => {
                                                     />
 
                                                     <DeleteRoundedIcon
-                                                        id={`deleteOption#${question.order}#${option.order}`}
+                                                        id={`deleteOption#${question.uid}#${option.uid}`}
                                                         style={{
                                                             fontSize: 20,
                                                             cursor: 'pointer',
@@ -499,10 +509,10 @@ const CreateTest = () => {
                                 </OptionsContainer>
 
                                 <FooterQuestion>
-                                    <Button id={`addOption#${question.order}`} onClick={handleAddOption}>
+                                    <Button id={`addOption#${question.uid}`} onClick={handleAddOption}>
                                         Add Option
                                     </Button>
-                                    <Button id={`deleteQuestion#${question.order}`} onClick={handleDeleteQuestion}>
+                                    <Button id={`deleteQuestion#${question.uid}`} onClick={handleDeleteQuestion}>
                                         Delete Question
                                     </Button>
                                 </FooterQuestion>
