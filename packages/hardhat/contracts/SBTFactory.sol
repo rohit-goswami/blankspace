@@ -6,10 +6,11 @@ import "./SBT.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract SBTFactory {
+    SBT[] public sbt;
     address immutable public tokenImplementation;
     address public owner; 
     mapping(address => bool) public allowedAddresses;
-
+    
     event CreateSBT(address indexed from, address indexed SBTAddress);
 
     modifier onlyOwner() {
@@ -33,6 +34,7 @@ contract SBTFactory {
     function createSBT(string calldata _name, string calldata _symbol) external onlyAllowedAccounts returns (address) {
         address clone = Clones.clone(tokenImplementation);
         SBT(clone).initialize(_name, _symbol);
+        sbt.push(clone);
         emit CreateSBT(msg.sender,clone);
         return clone;
     }
