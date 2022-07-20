@@ -32,7 +32,7 @@ const Container = styled.div`
     .time {
         position: absolute;
         top: -1rem;
-        right: .5rem;
+        right: 0.5rem;
         font-size: 1.2rem;
     }
 `;
@@ -50,7 +50,7 @@ const TestArenaCard = ({ test }) => {
 
     const handleStart = e => {
         e.preventDefault();
-        navigate(`/tests/${test.uid}`);
+        navigate(`/test/${test.uid}`);
     };
 
     const handleSubmissions = e => {
