@@ -50,7 +50,7 @@ const TestArenaCard = ({ test }) => {
 
     const handleStart = e => {
         e.preventDefault();
-        navigate(`/tests/${test.uid}`);
+        navigate(`/test/${test.uid}`);
     };
 
     const handleSubmissions = e => {

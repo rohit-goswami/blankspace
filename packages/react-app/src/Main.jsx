@@ -6,6 +6,7 @@ import CreateTest from './components/pages/CreateTest';
 import Error404 from './components/pages/Error404';
 import Home from './components/pages/Home';
 import Submissions from './components/pages/Submissions';
+import Test from './components/pages/Test';
 import TestArena from './components/pages/TestArena';
 
 const Main = () => {
@@ -15,6 +16,7 @@ const Main = () => {
             <Route exact path='/' element={<Home />}></Route>
             <Route exact path='/test-arena' element={<TestArena />}></Route>
             <Route exact path='/create-test' element={<CreateTest />}></Route>
+            <Route exact path='/test/:id' element={<Test />}></Route>
             <Route exact path='/submissions/:id' element={<Submissions />}></Route>
             <Route path='*' element={<Error404 />}></Route>
         </Routes>
