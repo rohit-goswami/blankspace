@@ -1,5 +1,7 @@
 # blankSpace
 
+![alt text](https://github.com/rohit-goswami/blankspace/blob/main/packages/react-app/public/github_banner.png?raw=true)
+
 ## Overview
 
 We are trying to bridge the gap between organizations and skilled people using Blockchain. 
