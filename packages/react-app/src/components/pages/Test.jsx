@@ -10,6 +10,7 @@ import { retrieveFiles } from '../../services/ipfs';
 import { Form, InputSubmit } from '../ui/Form';
 import Layout from '../layouts/Layout';
 import Title from '../ui/Title';
+import Timer from '../ui/Timer';
 
 // Styled
 const QuestionsContainer = styled.div`
@@ -117,6 +118,7 @@ const Test = () => {
     const [test, setTest] = useState(null);
     const [answers, setAnswers] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    const [timeout, setTimeout] = useState(false);
 
     useEffect(() => {
         if (!loaded) {
@@ -143,8 +145,17 @@ const Test = () => {
         }
     };
 
+    const handleTimeout = () => {
+        setTimeout(true);
+    }
+
     const handleSubmit = e => {
         e.preventDefault();
+
+        if (timeout) {
+            console.log('Timeout');
+            return;
+        }
 
         const submission = {
             owner: '',
@@ -222,6 +233,11 @@ const Test = () => {
     return (
         <Layout>
             <Title>{test && test.title}</Title>
+
+            <Timer
+                startTimer={1}
+                onTimeout={handleTimeout}
+            />
 
             <Form onSubmit={handleSubmit} noValidate>
                 <QuestionsContainer>
