@@ -8,7 +8,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 
 // Services
-import { storeFiles, retrieveFiles } from '../../services/ipfs';
+import { storeFiles, retrieveFiles, storeImage } from '../../services/ipfs';
+import { storeCID, getTestCount, getTestDetails } from '../../services/interaction_test';
+import { run } from '../../services/nftport';
+import { createSBT } from '../../services/interaction_SBTFactory';
 
 // Components
 import Layout from '../layouts/Layout';
@@ -155,24 +158,38 @@ const CreateTest = () => {
         ]);
     };
 
-    const handleSubmit = e => {
-        e.preventDefault();
+    const handleSubmit = async e => {
 
-        const test = {
-            uid: uuidv4(),
-            owner: '',
-            title,
-            description,
-            level: level.uid,
-            time,
-            questions,
-        };
+        try {            
+            e.preventDefault();
+    
+            const test = {
+                uid: uuidv4(),
+                owner: '',
+                title,
+                description,
+                level: level.uid,
+                time,
+                questions,
+            };
+    
+            console.log(test);
+    
+            // Push the test to IPFS and its cid on chain
+            // const cid = await storeFiles(test);
+            // await storeCID(cid);
 
-        console.log(test);
+            // Get the cid of the address
+            // const cid = await getTestDetails('0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 0);
+            // console.log('cid', cid._ipfsHash);
+    
+            // Create SBT
+            // await createSBT(test.title, 'SBT');
 
-        // storeFiles(test);
-
-        navigate('/test-arena');
+            navigate('/test-arena');
+        } catch (error) {
+            console.log(error);
+        }
     };
 
     const handleChangeLevel = e => {
@@ -185,9 +202,13 @@ const CreateTest = () => {
         inputFileRef.current.click();
     };
 
-    const handleChangeImage = e => {
+    const handleChangeImage = async e => {
         if (e.target.files.length > 0) {
             setFile(e.target.files[0]);
+            console.log(e.target.files[0]);
+
+            // const cid = await storeImage(e.target.files[0]);
+            // console.log('Cid Image', cid);
         }
     };
 
