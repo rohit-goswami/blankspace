@@ -1,8 +1,8 @@
 import { Web3Storage, File } from 'web3.storage';
 
 function getAccessToken() {
-    console.log('Token', process.env.WEB3STORAGE_TOKEN);
-    return process.env.WEB3STORAGE_TOKEN;
+    console.log('Token', process.env.REACT_APP_WEB3STORAGE_TOKEN);
+    return process.env.REACT_APP_WEB3STORAGE_TOKEN;
 }
 
 function makeStorageClient() {
@@ -15,6 +15,14 @@ export async function storeFiles(content) {
     console.log('myJSON', myJSON);
     const file = new File([myJSON], 'metadata.json', { type: 'json' });
     const cid = await client.put([file]);
+    console.log('cid', cid);
+    return cid;
+}
+
+export async function storeImage(file) {
+    const client = makeStorageClient();
+    const newFile = new File([file], 'sbt-image.' + file.name.split('.')[1], { type: 'image' });
+    const cid = await client.put([newFile]);
     console.log('cid', cid);
     return cid;
 }

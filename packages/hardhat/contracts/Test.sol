@@ -22,7 +22,7 @@ contract Test {
         ownerToTests[msg.sender].push(test);
     }
 
-    function getTestCount(address _owner) view public returns (uint256){
+    function getTestCount(address _owner) public view returns (uint256){
         require(_owner != address(0));
         return ownerToTests[_owner].length;
     }
