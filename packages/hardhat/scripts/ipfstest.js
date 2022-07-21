@@ -19,8 +19,8 @@ async function main() {
   const WALLET = "0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC";
 
   //get web3.storage access token
-  function getAccessToken() {
-    return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocjoweDMyYzcxYTk3NUQxNUM1MjhlNTUzRUQ1MDg3NjJEMjJGOTUzNDUxNTkiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NTgyMjQ3NDk0MDMsIm5hbWUiOiJibGFua1NwYWNlIn0.vUg6URGEsfsIPJRej5tJZMPiQOrctJqAhVp8GNnQi74";
+  function getAccessToken() { //rn token is invalid
+    return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkaWQ6ZXRocsdsdssdjoweDMyYzcxYTk3NUQxNUM1MjhlNTUzRUQ1MDg3NjJEMjJGOTUzNDUxNTkiLCJpc3MiOiJ3ZWIzLXN0b3JhZ2UiLCJpYXQiOjE2NTgyMjQ3NDk0MDMsIm5hbWUiOiJibGFua1NwYWNlIn0.vUg6URGEsfsIPJRej5tJZMPiQOrctJqAhVp8GNnQi74";
   }
 
   function makeStorageClient() {
