@@ -8,7 +8,8 @@
     "compile": "cd packages/hardhat && npx hardhat compile",
     "deploy": "cd packages/hardhat && npx hardhat run scripts/ipfstest.js --network localhost",
     "test": "cd packages/hardhat && npx hardhat test",
-    "chain": "cd packages/hardhat && npx hardhat node"
+    "chain": "cd packages/hardhat && npx hardhat node",
+    "install": "cd packages/hardhat && npm i && cd ../react-app && npm i"
   },
   "keywords": [],
   "author": "",

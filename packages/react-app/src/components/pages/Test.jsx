@@ -10,6 +10,7 @@ import { retrieveFiles } from '../../services/ipfs';
 import { Form, InputSubmit } from '../ui/Form';
 import Layout from '../layouts/Layout';
 import Title from '../ui/Title';
+import Timer from '../ui/Timer';
 
 // Styled
 const QuestionsContainer = styled.div`
@@ -106,6 +107,101 @@ const DefaultTest = {
                 },
             ],
         },
+        {
+            uid: '12345',
+            order: 3,
+            question: 'Are semicolons required?',
+            singleAnswer: true,
+            options: [
+                {
+                    uid: '65485',
+                    order: 1,
+                    option: 'Yes',
+                    correct: true,
+                },
+                {
+                    uid: '95475',
+                    order: 2,
+                    option: 'No',
+                },
+            ],
+        },
+        {
+            uid: '123456',
+            order: 4,
+            question: 'Are semicolons required?',
+            singleAnswer: true,
+            options: [
+                {
+                    uid: '654856',
+                    order: 1,
+                    option: 'Yes',
+                    correct: true,
+                },
+                {
+                    uid: '954756',
+                    order: 2,
+                    option: 'No',
+                },
+            ],
+        },
+        {
+            uid: '123457',
+            order: 5,
+            question: 'Are semicolons required?',
+            singleAnswer: true,
+            options: [
+                {
+                    uid: '654857',
+                    order: 1,
+                    option: 'Yes',
+                    correct: true,
+                },
+                {
+                    uid: '954757',
+                    order: 2,
+                    option: 'No',
+                },
+            ],
+        },
+        {
+            uid: '123458',
+            order: 6,
+            question: 'Are semicolons required?',
+            singleAnswer: true,
+            options: [
+                {
+                    uid: '654858',
+                    order: 1,
+                    option: 'Yes',
+                    correct: true,
+                },
+                {
+                    uid: '954758',
+                    order: 2,
+                    option: 'No',
+                },
+            ],
+        },
+        {
+            uid: '123459',
+            order: 7,
+            question: 'Are semicolons required?',
+            singleAnswer: true,
+            options: [
+                {
+                    uid: '654859',
+                    order: 1,
+                    option: 'Yes',
+                    correct: true,
+                },
+                {
+                    uid: '954759',
+                    order: 2,
+                    option: 'No',
+                },
+            ],
+        },
     ],
 };
 
@@ -117,6 +213,7 @@ const Test = () => {
     const [test, setTest] = useState(null);
     const [answers, setAnswers] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    const [timeout, setTimeout] = useState(false);
 
     useEffect(() => {
         if (!loaded) {
@@ -143,8 +240,17 @@ const Test = () => {
         }
     };
 
+    const handleTimeout = () => {
+        setTimeout(true);
+    }
+
     const handleSubmit = e => {
         e.preventDefault();
+
+        if (timeout) {
+            console.log('Timeout');
+            return;
+        }
 
         const submission = {
             owner: '',
@@ -221,43 +327,50 @@ const Test = () => {
 
     return (
         <Layout>
-            <Title>{test && test.title}</Title>
+            <div style={{ position: 'relative' }}>
+                <Timer
+                    startTimer={1}
+                    onTimeout={handleTimeout}
+                />
 
-            <Form onSubmit={handleSubmit} noValidate>
-                <QuestionsContainer>
-                    {test &&
-                        test.questions
-                            .sort((a, b) => (a.order > b.order ? 1 : -1))
-                            .map(question => (
-                                <div key={question.uid}>
-                                    <Caption>
-                                        {question.order} - {question.question}
-                                    </Caption>
+                <Title>{test && test.title}</Title>
 
-                                    <OptionsContainer>
-                                        {question.options
-                                            .sort((a, b) => (a.order > b.order ? 1 : -1))
-                                            .map(option => (
-                                                <OptionContainer key={option.uid}>
-                                                    <input
-                                                        id={`check#${question.uid}#${option.uid}`}
-                                                        type='checkbox'
-                                                        checked={isOptionChecked(question.uid, option.uid)}
-                                                        onChange={handleChangeCorrectOption}
-                                                    />
+                <Form onSubmit={handleSubmit} noValidate>
+                    <QuestionsContainer>
+                        {test &&
+                            test.questions
+                                .sort((a, b) => (a.order > b.order ? 1 : -1))
+                                .map(question => (
+                                    <div key={question.uid}>
+                                        <Caption>
+                                            {question.order} - {question.question}
+                                        </Caption>
 
-                                                    <label htmlFor={`check#${question.uid}#${option.uid}`}>
-                                                        {option.option}
-                                                    </label>
-                                                </OptionContainer>
-                                            ))}
-                                    </OptionsContainer>
-                                </div>
-                            ))}
-                </QuestionsContainer>
+                                        <OptionsContainer>
+                                            {question.options
+                                                .sort((a, b) => (a.order > b.order ? 1 : -1))
+                                                .map(option => (
+                                                    <OptionContainer key={option.uid}>
+                                                        <input
+                                                            id={`check#${question.uid}#${option.uid}`}
+                                                            type='checkbox'
+                                                            checked={isOptionChecked(question.uid, option.uid)}
+                                                            onChange={handleChangeCorrectOption}
+                                                        />
 
-                <InputSubmit type='submit' value='Submit Test' />
-            </Form>
+                                                        <label htmlFor={`check#${question.uid}#${option.uid}`}>
+                                                            {option.option}
+                                                        </label>
+                                                    </OptionContainer>
+                                                ))}
+                                        </OptionsContainer>
+                                    </div>
+                                ))}
+                    </QuestionsContainer>
+
+                    <InputSubmit type='submit' value='Submit Test' />
+                </Form>
+            </div>
         </Layout>
     );
 };
