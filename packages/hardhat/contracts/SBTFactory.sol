@@ -34,7 +34,7 @@ contract SBTFactory {
     function createSBT(string calldata _name, string calldata _symbol) external onlyAllowedAccounts returns (address) {
         address clone = Clones.clone(tokenImplementation);
         SBT(clone).initialize(_name, _symbol);
-        sbt.push(clone);
+        sbt.push(SBT(clone));
         emit CreateSBT(msg.sender,clone);
         return clone;
     }
