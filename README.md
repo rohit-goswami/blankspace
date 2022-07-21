@@ -1,6 +1,6 @@
 # blankSpace
 
-![alt text](https://github.com/rohit-goswami/blankspace/blob/main/packages/react-app/public/github_banner.png?raw=true)
+![alt text](https://github.com/rohit-goswami/blankspace/blob/main/packages/react-app/public/Banner.svg?raw=true)
 
 ## Overview
 
