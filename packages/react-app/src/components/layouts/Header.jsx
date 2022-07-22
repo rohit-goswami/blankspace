@@ -39,7 +39,7 @@ const DivFlexCenter = styled.div`
 
 const Title = styled.p`
     font-size: 2.6rem;
-    margin: 0 1rem;
+    margin: 0 0 .6rem .3rem;
     color: white;
     text-decoration: none;
 `;
@@ -73,25 +73,27 @@ const NavItem = styled(Link)`
 
 const Header = () => {
     return (
-        <HeaderStyled>
-            <HeaderContainer>
-                <Link to='/' style={{ textDecoration: 'none' }}>
-                    <DivFlexCenter id='logo'>
-                        <img src='/logo.svg' alt='Logo' width={50} />
-                        <Title>blankSpace</Title>
+        <div style={{ position: 'fixed', width: '100%', top: '0', background: 'var(--purple)', zIndex: '1' }}>
+            <HeaderStyled>
+                <HeaderContainer>
+                    <Link to='/' style={{ textDecoration: 'none' }}>
+                        <DivFlexCenter id='logo'>
+                            <img src='/logo1.svg' alt='Logo' width={70} />
+                            <Title>blankSpace</Title>
+                        </DivFlexCenter>
+                    </Link>
+
+                    <Nav>
+                        <NavItem to='/'>Home</NavItem>
+                        <NavItem to='/test-arena'>Test Arena</NavItem>
+                    </Nav>
+
+                    <DivFlexCenter>
+                        <MetaMask />
                     </DivFlexCenter>
-                </Link>
-
-                <Nav>
-                    <NavItem to='/'>Home</NavItem>
-                    <NavItem to='/test-arena'>Test Arena</NavItem>
-                </Nav>
-
-                <DivFlexCenter>
-                    <MetaMask />
-                </DivFlexCenter>
-            </HeaderContainer>
-        </HeaderStyled>
+                </HeaderContainer>
+            </HeaderStyled>
+        </div>
     );
 };
 
