@@ -8,7 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 
 // Services
-import { storeFiles, retrieveFiles, storeImage } from '../../services/ipfs';
+import { storeFile, retrieveFiles, storeImage } from '../../services/ipfs';
 import { storeCID, getTestCount, getTestDetails } from '../../services/interaction_test';
 import { run } from '../../services/nftport';
 import { createSBT } from '../../services/interaction_SBTFactory';
@@ -20,6 +20,14 @@ import { Form, Field, InputSubmit } from '../ui/Form';
 import { Button } from '../ui/Button';
 
 // Styled
+const ImageLoadedContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    width: 100%;
+    justify-content: space-between;
+`;
+
 const Image = styled.img`
     width: 100%;
     max-width: 30rem;
@@ -111,8 +119,14 @@ const CreateTest = () => {
     const [level, setLevel] = useState(null);
     const [time, setTime] = useState(30);
     const [file, setFile] = useState(undefined);
+    const [sbtDescription, setSbtDescription] = useState('');
+    const [imageURL, setImageURL] = useState('');
+    const [testURL, setTestURL] = useState('');
     const [questions, setQuestions] = useState([]);
     const [editOption, setEditOption] = useState(null);
+    const [uploadImageEnable, setUploadImageEnable] = useState(false);
+    const [publishSbtEnable, setPublishSbtEnable] = useState(false);
+    const [createTestEnable, setCreateTestEnable] = useState(true);
 
     useEffect(() => {
         if (!level) {
@@ -176,17 +190,12 @@ const CreateTest = () => {
             console.log(test);
     
             // Push the test to IPFS and its cid on chain
-            // const cid = await storeFiles(test);
-            // await storeCID(cid);
+            const cid = await storeFile(test);
+            setTestURL(`https://ipfs.io/ipfs/${cid}`);
 
-            // Get the cid of the address
-            // const cid = await getTestDetails('0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', 0);
-            // console.log('cid', cid._ipfsHash);
-    
-            // Create SBT
-            // await createSBT(test.title, 'SBT');
+            setCreateTestEnable(false);
+            setUploadImageEnable(true);
 
-            navigate('/test-arena');
         } catch (error) {
             console.log(error);
         }
@@ -197,20 +206,58 @@ const CreateTest = () => {
         setLevel(newLevel);
     };
 
-    const handleUploadImage = e => {
+    const handleChooseImage = e => {
         e.preventDefault();
         inputFileRef.current.click();
     };
 
-    const handleChangeImage = async e => {
+    const handleChangeImage = e => {
         if (e.target.files.length > 0) {
             setFile(e.target.files[0]);
-            console.log(e.target.files[0]);
-
-            // const cid = await storeImage(e.target.files[0]);
-            // console.log('Cid Image', cid);
         }
     };
+
+    const handleUploadImage = async e => {
+
+        try {
+            e.preventDefault();
+
+            const cid = await storeImage(file);
+            setImageURL(`https://ipfs.io/ipfs/${cid}`);
+
+            setUploadImageEnable(false);
+            setPublishSbtEnable(true);
+
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handlePublishSBT = async e => {
+
+        try {
+            
+            e.preventDefault();
+
+            await createSBT(getSbtName(), 'SBT');
+            navigate('/test-arena');
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const handleOpenImage = () => {
+        if (imageURL) {
+            window.open(imageURL);
+        }
+    }
+
+    const handleOpenTest = () => {
+        if (testURL) {
+            window.open(testURL);
+        }
+    }
 
     const handleChangeQuestion = e => {
         const questionId = e.target.id.split('#')[1];
@@ -414,6 +461,20 @@ const CreateTest = () => {
         addQuestion();
     };
 
+    const getSbtName = () => {
+        let nameImage = '';
+
+        title.split(' ').forEach(word => {
+            nameImage += word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase();
+        });
+
+        const companyName = 'BlankSpace';
+
+        nameImage += `_${companyName}`
+
+        return nameImage;
+    }
+
     return (
         <Layout>
             <Title>Create Test</Title>
@@ -435,12 +496,12 @@ const CreateTest = () => {
 
                     <Field>
                         <label htmlFor='description'>Description</label>
-                        <input
+                        <textarea
                             id='description'
                             type='text'
                             value={description}
                             autoComplete='off'
-                            onChange={e => setDescription(e.target.value)}
+                            onChange={e => setDescription(e.target.value.replace('\n',''))}
                         />
                     </Field>
 
@@ -459,6 +520,9 @@ const CreateTest = () => {
                         <label htmlFor='time'>Time</label>
                         <input id='time' type='number' value={time} onChange={e => setTime(e.target.value)} />
                     </Field>
+                </fieldset>
+                <fieldset>
+                    <legend>SBT Information</legend>
 
                     <Field>
                         <label htmlFor='image'>Image</label>
@@ -471,11 +535,69 @@ const CreateTest = () => {
                             style={{ display: 'none' }}
                         />
                         {file ? (
-                            <Image src={URL.createObjectURL(file)} alt='Test Token' onClick={handleUploadImage} />
+                            <ImageLoadedContainer>
+                                <Image src={URL.createObjectURL(file)} alt='Test Token' onClick={handleChooseImage} />
+                                <div style={{ display: 'flex', justifyContent: 'center', columnGap: '1rem' }}>
+                                    <Button onClick={handleUploadImage} disabled={!uploadImageEnable}>Upload Image</Button>
+                                    <Button onClick={handleChooseImage}>Change Image</Button>
+                                </div>
+                            </ImageLoadedContainer>
                         ) : (
-                            <Button onClick={handleUploadImage}>Upload Image</Button>
+                            <Button onClick={handleChooseImage}>Choose Image</Button>
                         )}
                     </Field>
+                    
+                    <Field>
+                        <label htmlFor='sbtName'>Name</label>
+                        <input
+                            id='sbtName'
+                            type='text'
+                            value={getSbtName()}
+                            autoComplete='off'
+                            readOnly
+                        />
+                    </Field>
+
+                    <Field>
+                        <label htmlFor='sbtDescription'>Description</label>
+                        <textarea
+                            id='sbtDescription'
+                            type='text'
+                            value={sbtDescription}
+                            autoComplete='off'
+                            onChange={e => setSbtDescription(e.target.value.replace('\n',''))}
+                        />
+                    </Field>
+
+                    <Field>
+                        <label htmlFor='imageURL'>Image URL</label>
+                        <input
+                            id='imageURL'
+                            type='text'
+                            value={imageURL}
+                            autoComplete='off'
+                            readOnly
+                            onClick={handleOpenImage}
+                            style={{ cursor: 'pointer' }}
+                        />
+                    </Field>
+
+                    <Field>
+                        <label htmlFor='testURL'>Test URL</label>
+                        <input
+                            id='testURL'
+                            type='text'
+                            value={testURL}
+                            autoComplete='off'
+                            readOnly
+                            onClick={handleOpenTest}
+                            style={{ cursor: 'pointer' }}
+                        />
+                    </Field>
+
+                    <div style={{ width: '100%', textAlign: 'center' }}>
+                        <Button onClick={handlePublishSBT} disabled={!publishSbtEnable}>Publish SBT</Button>
+                    </div>
                 </fieldset>
                 <fieldset>
                     <legend>Questions</legend>
@@ -590,7 +712,7 @@ const CreateTest = () => {
                     <Button onClick={handleAddQuestion}>Add Question</Button>
                 </fieldset>
 
-                <InputSubmit type='submit' value='Create Test' />
+                <InputSubmit type='submit' value='Store Test' disabled={!createTestEnable} />
             </Form>
         </Layout>
     );

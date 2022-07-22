@@ -329,7 +329,7 @@ const Test = () => {
         <Layout>
             <div style={{ position: 'relative' }}>
                 <Timer
-                    startTimer={1}
+                    startTimer={test.time}
                     onTimeout={handleTimeout}
                 />
 

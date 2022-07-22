@@ -9,7 +9,7 @@ function makeStorageClient() {
     return new Web3Storage({ token: getAccessToken() });
 }
 
-export async function storeFiles(content) {
+export async function storeFile(content) {
     const client = makeStorageClient();
     const myJSON = JSON.stringify(content);
     console.log('myJSON', myJSON);
