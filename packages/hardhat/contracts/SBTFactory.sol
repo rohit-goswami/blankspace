@@ -6,11 +6,13 @@ import "./SBT.sol";
 import "@openzeppelin/contracts/proxy/Clones.sol";
 
 contract SBTFactory {
-    SBT[] public sbt;
+    
     address immutable public tokenImplementation;
     address public owner; 
-    mapping(address => bool) public allowedAddresses;
     
+    mapping(address => bool) public allowedAddresses;
+    mapping(address => address) public ownerOfSBT;
+
     event CreateSBT(address indexed from, address indexed SBTAddress);
 
     modifier onlyOwner() {
@@ -18,7 +20,7 @@ contract SBTFactory {
         _;
     }
     modifier onlyAllowedAccounts() {
-        require(allowedAddresses[msg.sender] == true, "You're not allowed to create a new SBT");
+        require(allowedAddresses[tx.origin] == true, "You're not allowed to create a new SBT");
         _;
     }
 
@@ -31,11 +33,26 @@ contract SBTFactory {
         allowedAddresses[_newAccount] = true;
     }
 
+    function removeAccount(address _account) public onlyOwner {
+        allowedAddresses[_account] = false;
+    }
+
     function createSBT(string calldata _name, string calldata _symbol) external onlyAllowedAccounts returns (address) {
         address clone = Clones.clone(tokenImplementation);
         SBT(clone).initialize(_name, _symbol);
-        sbt.push(SBT(clone));
-        emit CreateSBT(msg.sender,clone);
+        ownerOfSBT[clone] = tx.origin;
+        emit CreateSBT(tx.origin,clone);
         return clone;
+    }
+
+
+    function mint(address _contract, address _to, string calldata _cid) public onlyAllowedAccounts {
+        require(ownerOfSBT[_contract] == tx.origin, "You're not the owner of this SBT contract");
+        SBT(_contract).mint(_to,_cid);
+    }
+
+    function revoke(address _contract, uint256 _tokenId) public onlyAllowedAccounts {
+        require(ownerOfSBT[_contract] == tx.origin, "You're not the owner of this SBT contract");
+        SBT(_contract).revoke(_tokenId);
     }
 } 
