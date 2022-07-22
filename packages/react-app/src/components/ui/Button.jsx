@@ -8,4 +8,8 @@ export const Button = styled.button`
     &:hover {
         cursor: pointer;
     }
+
+    &:disabled {
+        cursor: default;
+    }
 `;

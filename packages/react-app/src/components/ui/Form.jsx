@@ -44,7 +44,9 @@ export const Field = styled.div`
     }
 
     textarea {
-        height: 400px;
+        min-height: 6rem;
+        resize: vertical;
+        font-family: arial;
     }
 `;
 
@@ -61,5 +63,9 @@ export const InputSubmit = styled.input`
 
     &:hover {
         cursor: pointer;
+    }
+
+    &:disabled {
+        cursor: default;
     }
 `;
