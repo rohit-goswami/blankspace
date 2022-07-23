@@ -1,6 +1,8 @@
 :root {
     --purple: #7758d1;
     --orange: #FDCBD1;
+    --correct: green;
+    --wrong: red;
 }
 
 html {

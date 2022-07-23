@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 // Material UI
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 // Services
-import { getAllSubmissionsByTest } from '../../services/interface';
+import { getAllSubmissionsByTest, setSubmissionFailed } from '../../services/interface';
 import { retrieveFiles } from '../../services/ipfs';
 
 // Components
 import Layout from '../layouts/Layout';
 import { TableContainer, Table, Column, Cell } from '../ui/Table';
 import Title from '../ui/Title';
+import { Button } from '../ui/Button';
 
 // Styled
 const UserContainer = styled.div`
@@ -84,11 +85,13 @@ const Submissions = () => {
     // States
     const [submissions, setSubmissions] = useState([]);
 
-
     useEffect(() => {
+
         if (submissions.length === 0) {
             getSubmissions();
         }
+        
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getSubmissions = async () => {
@@ -98,7 +101,7 @@ const Submissions = () => {
             const response = await getAllSubmissionsByTest(id);
 
             const newSubmissions = await Promise.all(
-                response.map(item => getSubmissionContent(item.cidSubmission, item.date))
+                response.map(item => getSubmissionContent(item.cidSubmission, item.result))
             );
             
             setSubmissions(newSubmissions);
@@ -108,16 +111,16 @@ const Submissions = () => {
         }
     }
 
-    const getSubmissionContent = async (submissionCid, date) => {
+    const getSubmissionContent = async (submissionCid, result) => {
         
         try {
 
             const submission = await retrieveFiles(submissionCid).then(data => JSON.parse(data));
 
-            console.log(submission);
-            
-            // Hardcoded
+            submission.result = result;
             submission.date = new Date(submission.date);
+
+            // Hardcoded
             submission.user = 'Todo Name';
             submission.username = 'Todo Username';
             submission.transaction = 'Todo Transaction';
@@ -159,7 +162,9 @@ const Submissions = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {submissions.map(item => (
+                        {submissions
+                            .sort((a, b) => (a.date < b.date ? 1 : -1))
+                            .map(item => (
                             <tr key={item.uid}>
                                 <Cell>
                                     <UserContainer>
@@ -181,7 +186,17 @@ const Submissions = () => {
                                 </Cell>
                                 <Cell>{item.date.toLocaleDateString()}</Cell>
                                 <Cell>{getTimeText(item.seconds)}</Cell>
-                                <Cell>{item.score}</Cell>
+                                <Cell>
+                                    { item.result === 0 ? (
+                                        <Link to={`/check-submission/${item.uid}`}>
+                                            <Button>Check</Button>
+                                        </Link>
+                                    ) : item.result === 1 ? (
+                                        <p style={{ color: 'var(--correct)'}}>PASSED</p>
+                                    ) : (
+                                        <p style={{ color: 'var(--wrong)'}}>FAILED</p>
+                                    )}
+                                </Cell>
                             </tr>
                         ))}
                     </tbody>

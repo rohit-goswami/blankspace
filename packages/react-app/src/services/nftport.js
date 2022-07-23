@@ -2,10 +2,10 @@ import axios from "axios";
 
 const options = {
   method: 'GET',
-  url: 'https://api.nftport.xyz/v0/accounts/0x4cA51F26c5B17351E939FD9c6fAdc60BBd6b7594', //you should add wallet address here from metamask
+  url: 'https://api.nftport.xyz/v0/accounts/0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', //you should add wallet address here from metamask
   params: {
     chain: 'ethereum',
-    account_address: '0x4cA51F26c5B17351E939FD9c6fAdc60BBd6b7594', // add metamask address of logged in user
+    account_address: '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', // add metamask address of logged in user
     page_size: '5',
     include: 'metadata'
   },

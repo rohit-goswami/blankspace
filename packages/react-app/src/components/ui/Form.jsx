@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 
 export const Form = styled.form`
     max-width: 600px;
-    width: 95%auto;
+    width: 95%;
     margin: 5rem auto 4rem auto;
     font-size: 2rem;
 
