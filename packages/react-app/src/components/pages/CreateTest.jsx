@@ -185,7 +185,7 @@ const CreateTest = () => {
     
             const test = {
                 uid: testId,
-                owner: getCurrentAddress(),
+                owner: await getCurrentAddress(),
                 title,
                 description,
                 level: level.uid,

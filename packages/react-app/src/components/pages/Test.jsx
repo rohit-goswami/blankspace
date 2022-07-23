@@ -241,7 +241,13 @@ const Test = () => {
             // Get the content of the test
             const content = await retrieveFiles(response.cidTest);
 
-            setTest(JSON.parse(content));
+            // Parse the content
+            const testJson = JSON.parse(content);
+
+            // Set the sbt to the test
+            testJson.sbt = response.sbt;
+
+            setTest(testJson);
 
         } catch (error) {
             console.log(error);
@@ -265,7 +271,7 @@ const Test = () => {
     
             const submission = {
                 uid: uuidv4(),
-                owner: getCurrentAddress(),
+                owner: await getCurrentAddress(),
                 test: test.uid,
                 date: new Date(),
                 seconds: time,
@@ -274,7 +280,7 @@ const Test = () => {
     
             const cid = await storeFile(submission);
 
-            await newSubmission(submission.uid, test.uid, cid);
+            await newSubmission(submission.uid, test.uid, cid, test.sbt);
 
             navigate('/test-arena');
             

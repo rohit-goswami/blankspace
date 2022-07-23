@@ -7,7 +7,7 @@ contract TestContract {
         string cidImage;
         string cidTest;
         address ownerTest;
-        address test;
+        address sbt;
         uint256 date;
     }
 
@@ -30,14 +30,14 @@ contract TestContract {
         testCounter = 0;
     }
 
-    function newTest(string calldata _cidImage, string calldata _cidTest, address _test, string calldata _uid) public onlyOwner {
+    function newTest(string calldata _cidImage, string calldata _cidTest, address _sbt, string calldata _uid) public onlyOwner {
         
         // Create Test
         Test memory test = Test(
             _cidImage,
             _cidTest,
             tx.origin,
-            _test,
+            _sbt,
             block.timestamp
         );
 
@@ -53,7 +53,7 @@ contract TestContract {
         // Increment the counter
         testCounter += 1;
 
-        emit NewTest(tx.origin, _test, _uid);
+        emit NewTest(tx.origin, _sbt, _uid);
     }
 
     function getTestById(string calldata _uid) public view returns(Test memory) {

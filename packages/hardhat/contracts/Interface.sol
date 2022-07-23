@@ -79,8 +79,8 @@ contract Interface {
     /**
      * SumbissionContract Functions
     */
-    function newSubmission(string calldata _submissionId, string calldata _testId, string calldata _cidSubmission) public {
-        SubmissionContract(submission).newSubmission(_submissionId, _testId, _cidSubmission);
+    function newSubmission(string calldata _submissionId, string calldata _testId, string calldata _cidSubmission, address _sbt) public {
+        SubmissionContract(submission).newSubmission(_submissionId, _testId, _cidSubmission, _sbt);
     }
 
     function getSubmissionById(string calldata _uid) public view returns(SubmissionContract.Submission memory){
@@ -92,12 +92,12 @@ contract Interface {
     }
 
     function setSubmissionPassed(string calldata _uid) public  {
-        require(SBTFactory(sbtFactory).ownerOfSBT(getSubmissionById(_uid).account) == msg.sender,"You cannot correct this submission");
+        require(SBTFactory(sbtFactory).ownerOfSBT(getSubmissionById(_uid).sbt) == msg.sender,"You cannot correct this submission");
         SubmissionContract(submission).setSubmissionPassed(_uid);
     }
 
     function setSubmissionFailed(string calldata _uid) public  {
-        require(SBTFactory(sbtFactory).ownerOfSBT(getSubmissionById(_uid).account) == msg.sender,"You cannot correct this submission");
+        require(SBTFactory(sbtFactory).ownerOfSBT(getSubmissionById(_uid).sbt) == msg.sender,"You cannot correct this submission");
         SubmissionContract(submission).setSubmissionFailed(_uid);
     }
 }
