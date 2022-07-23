@@ -11,12 +11,13 @@ contract TestContract {
         uint256 date;
     }
 
-    Test[] listOfAllTests;
-    mapping(address => Test[]) listOfAllTestsOfACompany;
+    mapping(address => string[]) public listOfAllTestsOfACompany; // Test -> Array uid Test
+    mapping(string => Test) public listOfTests; // uid Test -> Test
+    
 
     address owner;    
 
-    event NewTest(address indexed from, address indexed test, uint256 indexed date);
+    event NewTest(address indexed from, address indexed test, string indexed uid);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "You're not the owner of this smart contract");
@@ -27,7 +28,7 @@ contract TestContract {
         owner = msg.sender;
     }
 
-    function newTest(string calldata _cidImage, string calldata _cidTest, address _test) public onlyOwner {
+    function newTest(string calldata _cidImage, string calldata _cidTest, address _test, string calldata _uid) public onlyOwner {
         Test memory test = Test(
             _cidImage,
             _cidTest,
@@ -35,16 +36,17 @@ contract TestContract {
             _test,
             block.timestamp
         );
-        listOfAllTests.push(test);
-        listOfAllTestsOfACompany[tx.origin].push(test);
-        emit NewTest(tx.origin,_test,block.timestamp);
+        listOfAllTestsOfACompany[_test].push(_uid);
+        listOfTests[_uid] = test;
+        emit NewTest(tx.origin,_test,_uid);
     }
-    
-    function getAllTests() public view returns(Test[] memory) {
-        return listOfAllTests;
-    }
-    function getAllTestsOfACompany(address _company) public view returns(Test[] memory) {
+
+    function getAllTestsOfACompany(address _company) public view returns(string[] memory) {
         return listOfAllTestsOfACompany[_company];
+    }
+
+    function getTest(string calldata _uid) public view returns(Test memory) {
+        return listOfTests[_uid];
     }
 
 }
