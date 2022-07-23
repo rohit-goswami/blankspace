@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import Interface from '../contracts/Interface.sol/Interface.json';
 
-const InterfaceAddress = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
+const InterfaceAddress = '0x0165878A594ca255338adfa4d48449f69242Eb8F';
 
 async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -105,13 +105,13 @@ export async function getAllTestsByOwner(ownerAddress) {
  */
 
 // To store onchain a new submission
-export async function newSubmission(uidSubmission, uidTest, cidSubmission) {
+export async function newSubmission(uidSubmission, uidTest, cidSubmission, sbt) {
     if (typeof window.ethereum !== 'undefined') {
         await requestAccount();
         const provider = newProvider();
         const signer = provider.getSigner();
         const contract = instanceContract(InterfaceAddress, Interface.abi, signer);
-        const tx = await contract.newSubmission(uidSubmission, uidTest, cidSubmission);
+        const tx = await contract.newSubmission(uidSubmission, uidTest, cidSubmission, sbt);
         await tx.wait();
     }
 }

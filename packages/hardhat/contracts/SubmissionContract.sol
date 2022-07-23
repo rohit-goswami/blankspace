@@ -8,6 +8,7 @@ contract SubmissionContract {
     struct Submission {
         string cidSubmission;
         address account;
+        address sbt;
         uint256 date;
         Result result;
     }
@@ -20,7 +21,7 @@ contract SubmissionContract {
 
     address owner;   
 
-    event NewSubmission(address indexed from, string indexed submissionId, string indexed testId);
+    event NewSubmission(address indexed from, string indexed submissionId, address indexed sbt);
     event CorrectedSubmission(address indexed reviser, string indexed uid);
 
     modifier onlyOwner() {
@@ -32,12 +33,13 @@ contract SubmissionContract {
         owner = msg.sender;
     }
 
-    function newSubmission(string calldata _submissionId, string calldata _testId, string calldata _cidSubmission) public onlyOwner {
+    function newSubmission(string calldata _submissionId, string calldata _testId, string calldata _cidSubmission, address _sbt) public onlyOwner {
 
         // Create the Submission
         Submission memory submission = Submission(
             _cidSubmission,
             tx.origin,
+            _sbt,
             block.timestamp,
             Result.PENDING
         );
@@ -54,7 +56,7 @@ contract SubmissionContract {
         // Increment the counter
         submissionCounter += 1;
 
-        emit NewSubmission(tx.origin, _submissionId, _testId);
+        emit NewSubmission(tx.origin, _submissionId, _sbt);
     }
 
     function getSubmissionById(string calldata _uid) public view returns (Submission memory){
@@ -64,7 +66,7 @@ contract SubmissionContract {
     function getAllSubmissionsByTest(string calldata _testId) public view returns(Submission[] memory){
        Submission[] memory submissionsByTest = new Submission[](submissionsByTests[_testId].length);
 
-        // Loop all the tests of the owner
+        // Loop all the submissions of the test
         for (uint i = 0; i < submissionsByTests[_testId].length; i++) {
             string memory uid = submissionsByTests[_testId][i];
             uint index = indexBySubmissions[uid];
