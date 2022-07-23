@@ -4,7 +4,7 @@ const hre = require("hardhat");
 
 async function main() {
 
-  const Sbt = await ethers.getContractFactory("Test");
+  const Sbt = await ethers.getContractFactory("Interface");
   const sbt = await Sbt.deploy();
   await sbt.deployed();
 

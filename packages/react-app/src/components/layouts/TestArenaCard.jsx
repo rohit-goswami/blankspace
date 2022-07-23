@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 // Components
 import { Button } from '../ui/Button';
@@ -45,29 +45,20 @@ const ButtonsContainer = styled.div`
 `;
 
 const TestArenaCard = ({ test }) => {
-    // Hook useNavigate
-    const navigate = useNavigate();
-
-    const handleStart = e => {
-        e.preventDefault();
-        navigate(`/test/${test.uid}`);
-    };
-
-    const handleSubmissions = e => {
-        e.preventDefault();
-        navigate(`/submissions/${test.uid}`);
-    };
-
     return (
         <Container>
             <img src='./logo.svg' alt='' width={60} />
             <p className='title'>{test.title}</p>
             <p className='description'>{test.description}</p>
-            <p className='time'>{test.time} min</p>
+            <p className='time'>{test.minutes} min</p>
 
             <ButtonsContainer>
-                <Button onClick={handleStart}>Start</Button>
-                <Button onClick={handleSubmissions}>Submissions</Button>
+                <Link to={`/test/${test.uid}`}>
+                    <Button>Start</Button>
+                </Link>
+                <Link to={`/submissions/${test.uid}`}>
+                    <Button>Submissions</Button>
+                </Link> 
             </ButtonsContainer>
         </Container>
     );

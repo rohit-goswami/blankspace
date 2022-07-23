@@ -63,7 +63,7 @@ contract Interface {
     }
 
     // SumbissionContract Functions
-    function newSubmission(string calldata _cidSubmission, address _test) public {
+    function newSubmission(string calldata uidSubmission, string calldata _cidSubmission, address _test) public {
         SubmissionContract(submission).newSubmission(_cidSubmission,_test);
     }
 

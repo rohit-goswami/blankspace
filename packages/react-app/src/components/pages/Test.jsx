@@ -1,16 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import { v4 as uuidv4 } from 'uuid';
 
 // Services
-import { retrieveFiles } from '../../services/ipfs';
+import { newSubmission } from '../../services/interface';
+import { storeFile, retrieveFiles } from '../../services/ipfs';
 
 // Components
 import { Form, InputSubmit } from '../ui/Form';
 import Layout from '../layouts/Layout';
 import Title from '../ui/Title';
 import Timer from '../ui/Timer';
+
+// Utils
+import { getCurrentAddress } from '../../utils/metamask';
 
 // Styled
 const QuestionsContainer = styled.div`
@@ -209,10 +213,14 @@ const Test = () => {
     // Hook useParams
     const params = useParams();
 
+    // Hook useNavigate
+    const navigate = useNavigate();
+
     // States
     const [test, setTest] = useState(null);
     const [answers, setAnswers] = useState([]);
     const [loaded, setLoaded] = useState(false);
+    const [time, setTime] = useState(0);
     const [timeout, setTimeout] = useState(false);
 
     useEffect(() => {
@@ -226,15 +234,15 @@ const Test = () => {
 
     const getTest = async () => {
         try {
-            // const cid = 'bafybeihimhu5eub747uqkbjr2z5rdex7qji27i5zhab6sbujbmkhj4fbc4';
+            
+            const cid = 'bafybeidjceiw3hueove254ypvqrqkqiektgx2rkik5mxvtu724bckruwba';
 
-            // const response = await retrieveFiles(cid);
+            const response = await retrieveFiles(cid);
+            
+            setTest(JSON.parse(response));
 
-            // setTest(JSON.parse(response));
+            console.log(JSON.parse(response));
 
-            // console.log(response);
-
-            setTest(DefaultTest);
         } catch (error) {
             console.log(error);
         }
@@ -244,21 +252,35 @@ const Test = () => {
         setTimeout(true);
     }
 
-    const handleSubmit = e => {
-        e.preventDefault();
+    const handleSubmit = async e => {
 
-        if (timeout) {
-            console.log('Timeout');
-            return;
+        try {
+
+            e.preventDefault();
+    
+            if (timeout) {
+                console.log('Timeout');
+                return;
+            }
+    
+            const submission = {
+                uid: uuidv4(),
+                owner: getCurrentAddress(),
+                test: test.uid,
+                date: new Date(),
+                seconds: time,
+                answers,
+            };
+    
+            const cid = await storeFile(submission);
+
+            await newSubmission(cid, '0x4CEc804494d829bEA93AB8eA7045A7efBED3c229');
+
+            navigate('/test-arena');
+            
+        } catch (error) {
+            console.log(error);
         }
-
-        const submission = {
-            owner: '',
-            test: test.uid,
-            answers,
-        };
-
-        console.log(submission);
     };
 
     const handleChangeCorrectOption = e => {
@@ -329,8 +351,9 @@ const Test = () => {
         <Layout>
             <div style={{ position: 'relative' }}>
                 <Timer
-                    startTimer={test.time}
+                    startMinutes={test && test.minutes}
                     onTimeout={handleTimeout}
+                    onSecondTick={value => setTime(value)}
                 />
 
                 <Title>{test && test.title}</Title>
@@ -343,7 +366,7 @@ const Test = () => {
                                 .map(question => (
                                     <div key={question.uid}>
                                         <Caption>
-                                            {question.order} - {question.question}
+                                            {question.order} - {question.caption}
                                         </Caption>
 
                                         <OptionsContainer>
@@ -359,7 +382,7 @@ const Test = () => {
                                                         />
 
                                                         <label htmlFor={`check#${question.uid}#${option.uid}`}>
-                                                            {option.option}
+                                                            {option.caption}
                                                         </label>
                                                     </OptionContainer>
                                                 ))}

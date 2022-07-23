@@ -35,8 +35,8 @@ export const Table = styled.table`
         padding-left: 0.8rem;
     }
 
-    td:nth-child(1),
-    th:nth-child(1) {
+    td:nth-of-type(1),
+    th:nth-of-type(1) {
         padding-left: 4rem;
     }
 
@@ -48,7 +48,7 @@ export const Table = styled.table`
         height: 5rem;
     }
 
-    tbody tr:nth-child(even) {
+    tbody tr:nth-of-type(even) {
         background-color: #f5f5f5;
     }
 `;

@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
-import Interface from '../contracts/Interace.sol/Interface.json';
+import Interface from '../contracts/Interface.sol/Interface.json';
 
-const InterfaceAddress = 'COPY_ADDRESS_OF_CONTRACT';
+const InterfaceAddress = '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707';
 
 async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
