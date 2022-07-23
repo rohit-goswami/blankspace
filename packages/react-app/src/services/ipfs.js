@@ -1,7 +1,6 @@
 import { Web3Storage, File } from 'web3.storage';
 
 function getAccessToken() {
-    console.log('Token', process.env.REACT_APP_WEB3STORAGE_TOKEN);
     return process.env.REACT_APP_WEB3STORAGE_TOKEN;
 }
 
@@ -12,10 +11,8 @@ function makeStorageClient() {
 export async function storeFile(content) {
     const client = makeStorageClient();
     const myJSON = JSON.stringify(content);
-    console.log('myJSON', myJSON);
     const file = new File([myJSON], 'metadata.json', { type: 'json' });
     const cid = await client.put([file]);
-    console.log('cid', cid);
     return cid;
 }
 
@@ -23,22 +20,18 @@ export async function storeImage(file) {
     const client = makeStorageClient();
     const newFile = new File([file], 'sbt-image.' + file.name.split('.')[1], { type: 'image' });
     const cid = await client.put([newFile]);
-    console.log('cid', cid);
     return cid;
 }
 
 export async function retrieveFiles(cid) {
     const client = makeStorageClient();
     const res = await client.get(cid);
-    console.log(`Got a response! [${res.status}] ${res.statusText}`);
     if (!res.ok) {
         throw new Error(`failed to get ${cid} - [${res.status}] ${res.statusText}`);
     }
     const files = await res.files();
     for (const file of files) {
-        // console.log(`${file.cid} -- ${file.path} -- ${file.size}`);
         const answer = await file.text();
-        // console.log(answer);
         return answer;
     }
 }
@@ -87,7 +80,3 @@ const content = {
         },
     ],
 };
-// const cid = await storeFiles(content);
-// console.log(cid);
-// const file = await retrieveFiles(`${cid}`); // https://ipfs.io/ipfs/cid
-// console.log(file);

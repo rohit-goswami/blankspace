@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
-import Interface from '../contracts/Interace.sol/Interface.json';
+import Interface from '../contracts/Interface.sol/Interface.json';
 
-const InterfaceAddress = '0x91096E774d298F797B57b3d5c9E65288cA24B7df';
+const InterfaceAddress = '0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0';
 
 async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -13,6 +13,20 @@ function newProvider() {
 
 function instanceContract(address, abi, signer) {
     return new ethers.Contract(address, abi, signer);
+}
+
+/**
+ * SBTFactory Functions
+ */
+
+// To know if an account is allowed to create test, return a boolean.
+export async function createSBTAllowed(account) {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        const tx = await contract.createSBTAllowed(account);
+        return tx;
+    }
 }
 
 // To create a new smart contract and sotre the cid onchain
@@ -27,15 +41,9 @@ export async function createSBT(name, symbol,cidImage,cidTest,uidTest) {
     }
 }
 
-// To know if an account is allowed to create test, return a boolean.
-export async function createSBTAllowed(account) {
-    if (typeof window.ethereum !== 'undefined') {
-        const provider = newProvider();
-        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
-        const tx = await contract.createSBTAllowed(account);
-        return tx;
-    }
-}
+/**
+ * SBT Functions
+ */
 
 // To mint a new SBT
 export async function mintSBT(contractAddress, to,cidImage) {
@@ -61,68 +69,68 @@ export async function revokeSBT(contractAddress, tokenID) {
     }
 }
 
+/**
+ * TestContract Functions
+ */
+
+// Get a Test by its uid
+export async function getTestById(uidTest) {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        return contract.getTestById(uidTest);
+    }
+}
+
+// Get all the tests
+export async function getAllTests() {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        return contract.getAllTests();
+    }
+}
+
+// Get all the tests of the owner
+export async function getAllTestsByOwner(ownerAddress) {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        return contract.getAllTestsByOwner(ownerAddress);
+    }
+}
+
+/**
+ * SumbissionContract Functions
+ */
+
 // To store onchain a new submission
-export async function newSubmission(cidSubmission,contractAddress,uidSubmission) {
+export async function newSubmission(uidSubmission, uidTest, cidSubmission) {
     if (typeof window.ethereum !== 'undefined') {
         await requestAccount();
         const provider = newProvider();
         const signer = provider.getSigner();
         const contract = instanceContract(InterfaceAddress, Interface.abi, signer);
-        const tx = await contract.newSubmission(cidSubmission,contractAddress,uidSubmission);
+        const tx = await contract.newSubmission(uidSubmission, uidTest, cidSubmission);
         await tx.wait();
-    }
-}
-
-// To set the result of a submission, pass a 1 if the submission is passed.
-// or 2 if the submission is failed.
-export async function setResultSubmission(uidSubmission,result) {
-    if (typeof window.ethereum !== 'undefined') {
-        await requestAccount();
-        const provider = newProvider();
-        const signer = provider.getSigner();
-        const contract = instanceContract(InterfaceAddress, Interface.abi, signer);
-        const tx = await contract.setResultSubmission(uidSubmission,result);
-        await tx.wait();
-    }
-}
-
-// To get a specific test
-export async function getTest(uidTest) {
-    if (typeof window.ethereum !== 'undefined') {
-        const provider = newProvider();
-        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
-        const tx = await contract.getTest(uidTest);
-        return tx;
-    }
-}
-
-// To get all the test of a company
-export async function getAllTestsOfACompany(companyAddress) {
-    if (typeof window.ethereum !== 'undefined') {
-        const provider = newProvider();
-        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
-        const tx = await contract.getAllTestsOfACompany(companyAddress);
-        return tx;
-    }
-}
-
-// To get all the test submissions of a test
-export async function getAllSubmissionsOfATest(contractAddress) {
-    if (typeof window.ethereum !== 'undefined') {
-        const provider = newProvider();
-        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
-        const tx = await contract.getAllSubmissionsOfATest(contractAddress);
-        return tx;
     }
 }
 
 // To get a specific submission
-export async function getSubmission(uidSubmission) {
+export async function getSubmissionById(uidSubmission) {
     if (typeof window.ethereum !== 'undefined') {
         const provider = newProvider();
         const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
-        const tx = await contract.getSubmission(uidSubmission);
-        return tx;
+        return contract.getSubmissionById(uidSubmission);
+    }
+}
+
+// To get all the test submissions of a test
+export async function getAllSubmissionsByTest(uidTest) {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        return contract.getAllSubmissionsByTest(uidTest);
     }
 }
 
@@ -133,5 +141,17 @@ export async function getResultSubmission(uidSubmission) {
         const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
         const tx = await contract.getResultSubmission(uidSubmission);
         return tx;
+    }
+}
+// To set the result of a submission, pass a 1 if the submission is passed.
+// or 2 if the submission is failed.
+export async function setResultSubmission(uidSubmission,result) {
+    if (typeof window.ethereum !== 'undefined') {
+        await requestAccount();
+        const provider = newProvider();
+        const signer = provider.getSigner();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, signer);
+        const tx = await contract.setResultSubmission(uidSubmission,result);
+        await tx.wait();
     }
 }

@@ -8,16 +8,17 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 
 // Services
-import { storeFile, retrieveFiles, storeImage } from '../../services/ipfs';
-import { storeCID, getTestCount, getTestDetails } from '../../services/interaction_test';
-import { run } from '../../services/nftport';
-import { createSBT } from '../../services/interaction_SBTFactory';
+import { storeFile, storeImage } from '../../services/ipfs';
+import { createSBT } from '../../services/interface';
 
 // Components
 import Layout from '../layouts/Layout';
 import Title from '../ui/Title';
 import { Form, Field, InputSubmit } from '../ui/Form';
 import { Button } from '../ui/Button';
+
+// Utils
+import { getCurrentAddress } from '../../utils/metamask';
 
 // Styled
 const ImageLoadedContainer = styled.div`
@@ -114,14 +115,15 @@ const CreateTest = () => {
     const inputFileRef = useRef(null);
 
     // States
+    const [testId, setTestId] = useState('');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [level, setLevel] = useState(null);
-    const [time, setTime] = useState(30);
+    const [minutes, setMinutes] = useState(30);
     const [file, setFile] = useState(undefined);
     const [sbtDescription, setSbtDescription] = useState('');
-    const [imageURL, setImageURL] = useState('');
-    const [testURL, setTestURL] = useState('');
+    const [imageCID, setImageCID] = useState('');
+    const [testCID, setTestCID] = useState('');
     const [questions, setQuestions] = useState([]);
     const [editOption, setEditOption] = useState(null);
     const [uploadImageEnable, setUploadImageEnable] = useState(false);
@@ -129,6 +131,10 @@ const CreateTest = () => {
     const [createTestEnable, setCreateTestEnable] = useState(true);
 
     useEffect(() => {
+        if (!testId) {
+            setTestId(uuidv4());
+        }
+
         if (!level) {
             setLevel(levels[0]);
         }
@@ -178,12 +184,12 @@ const CreateTest = () => {
             e.preventDefault();
     
             const test = {
-                uid: uuidv4(),
-                owner: '',
+                uid: testId,
+                owner: getCurrentAddress(),
                 title,
                 description,
                 level: level.uid,
-                time,
+                minutes,
                 questions,
             };
     
@@ -191,7 +197,7 @@ const CreateTest = () => {
     
             // Push the test to IPFS and its cid on chain
             const cid = await storeFile(test);
-            setTestURL(`https://ipfs.io/ipfs/${cid}`);
+            setTestCID(cid);
 
             setCreateTestEnable(false);
             setUploadImageEnable(true);
@@ -223,7 +229,7 @@ const CreateTest = () => {
             e.preventDefault();
 
             const cid = await storeImage(file);
-            setImageURL(`https://ipfs.io/ipfs/${cid}`);
+            setImageCID(cid);
 
             setUploadImageEnable(false);
             setPublishSbtEnable(true);
@@ -239,7 +245,8 @@ const CreateTest = () => {
             
             e.preventDefault();
 
-            await createSBT(getSbtName(), 'SBT');
+            await createSBT(getSbtName(), 'SBT', imageCID, testCID, testId);
+
             navigate('/test-arena');
 
         } catch (error) {
@@ -248,14 +255,14 @@ const CreateTest = () => {
     }
 
     const handleOpenImage = () => {
-        if (imageURL) {
-            window.open(imageURL);
+        if (imageCID) {
+            window.open(getImageURL());
         }
     }
 
     const handleOpenTest = () => {
-        if (testURL) {
-            window.open(testURL);
+        if (testCID) {
+            window.open(getTestURL());
         }
     }
 
@@ -470,9 +477,17 @@ const CreateTest = () => {
 
         const companyName = 'BlankSpace';
 
-        nameImage += `_${companyName}`
+        nameImage += `_${companyName}`;
 
         return nameImage;
+    }
+
+    const getImageURL = () => {
+        return imageCID ? `https://ipfs.io/ipfs/${imageCID}` : '';
+    }
+
+    const getTestURL = () => {
+        return testCID ? `https://ipfs.io/ipfs/${testCID}` : '';
     }
 
     return (
@@ -517,8 +532,8 @@ const CreateTest = () => {
                     </Field>
 
                     <Field>
-                        <label htmlFor='time'>Time</label>
-                        <input id='time' type='number' value={time} onChange={e => setTime(e.target.value)} />
+                        <label htmlFor='minutes'>Minutes</label>
+                        <input id='minutes' type='number' value={minutes} onChange={e => setMinutes(e.target.value)} />
                     </Field>
                 </fieldset>
                 <fieldset>
@@ -574,7 +589,7 @@ const CreateTest = () => {
                         <input
                             id='imageURL'
                             type='text'
-                            value={imageURL}
+                            value={getImageURL()}
                             autoComplete='off'
                             readOnly
                             onClick={handleOpenImage}
@@ -587,7 +602,7 @@ const CreateTest = () => {
                         <input
                             id='testURL'
                             type='text'
-                            value={testURL}
+                            value={getTestURL()}
                             autoComplete='off'
                             readOnly
                             onClick={handleOpenTest}

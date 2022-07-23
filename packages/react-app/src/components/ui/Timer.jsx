@@ -19,7 +19,7 @@ const Container = styled.div`
     }
 `;
 
-const Timer = ({ startTimer, onTimeout }) => {
+const Timer = ({ startMinutes, onTimeout, onSecondTick }) => {
 
     // States
     const [time, setTime] = useState(0.1);
@@ -36,18 +36,19 @@ const Timer = ({ startTimer, onTimeout }) => {
     }, []);
 
     useEffect(() => {
-        if (!timeout && time > startTimer * 60) {
+        if (!timeout && startMinutes > 0 && time > startMinutes * 60) {
             setTimeout(true);
             onTimeout();
         }
+        onSecondTick(time - 0.1);
     }, [time]);
 
     return (
         <AbsoluteContainer>
             <Container>
-                { startTimer * 60 > time ? (
+                { startMinutes * 60 > time ? (
                     <>
-                        <p>{("0" + Math.floor((startTimer - time / 60) % 60)).slice(-2)}:</p>
+                        <p>{("0" + Math.floor((startMinutes - time / 60) % 60)).slice(-2)}:</p>
                         <p>{("0" + (59 - Math.floor((time) % 60))).slice(-2)}</p>
                     </>
                 ) : (

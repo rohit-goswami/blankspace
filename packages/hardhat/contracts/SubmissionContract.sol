@@ -8,17 +8,19 @@ contract SubmissionContract {
     struct Submission {
         string cidSubmission;
         address account;
-        address test;
         uint256 date;
         Result result;
     }
 
-    mapping(address => string[]) public listOfAllSubmissionsOfATest; // Test -> Array uid Submissions
-    mapping(string => Submission) public listOfSubmissions; // uid Submissions -> Submission
+    uint submissionCounter;
+    Submission[] public submissions; // Submission array
+    mapping(string => uint) public indexBySubmissions; // uid Submission -> index Submission in submissions
+    mapping(string => string[]) public submissionsByTests; // uid Test -> Array uid Submission
+
 
     address owner;   
 
-    event NewSubmission(address indexed from, address indexed test, string indexed uid);
+    event NewSubmission(address indexed from, string indexed submissionId, string indexed testId);
     event CorrectedSubmission(address indexed reviser, string indexed uid);
 
     modifier onlyOwner() {
@@ -30,37 +32,57 @@ contract SubmissionContract {
         owner = msg.sender;
     }
 
-    function newSubmission(string calldata _cidSubmission, address _test, string calldata _uid) public onlyOwner {
+    function newSubmission(string calldata _submissionId, string calldata _testId, string calldata _cidSubmission) public onlyOwner {
+
+        // Create the Submission
         Submission memory submission = Submission(
             _cidSubmission,
             tx.origin,
-            _test,
             block.timestamp,
             Result.PENDING
         );
-        listOfAllSubmissionsOfATest[_test].push(_uid);
-        listOfSubmissions[_uid] = submission;
-        emit NewSubmission(tx.origin,_test,_uid);
+
+        // Push the uid to the Test
+        submissionsByTests[_testId].push(_submissionId);
+
+        // Set the index of the test
+        indexBySubmissions[_submissionId] = submissionCounter;
+
+        // Push the Submission to the list
+        submissions.push(submission);
+
+        // Increment the counter
+        submissionCounter += 1;
+
+        emit NewSubmission(tx.origin, _submissionId, _testId);
     }
 
-    function setResultSubmission(string calldata _uid, Result _result) public onlyOwner {
-        require(listOfSubmissions[_uid].result == Result.PENDING,"This submission has already been corrected");
-        require(_result == Result.PASSED || _result == Result.FAILED);
-        listOfSubmissions[_uid].result = _result;
+    function getSubmissionById(string calldata _uid) public view returns (Submission memory){
+        return submissions[indexBySubmissions[_uid]];
+    }
+
+    function getAllSubmissionsByTest(string calldata _testId) public view returns(Submission[] memory){
+       Submission[] memory submissionsByTest = new Submission[](submissionsByTests[_testId].length);
+
+        // Loop all the tests of the owner
+        for (uint i = 0; i < submissionsByTests[_testId].length; i++) {
+            string memory uid = submissionsByTests[_testId][i];
+            uint index = indexBySubmissions[uid];
+            submissionsByTest[i] = submissions[index];
+        }
+
+        return submissionsByTest;
+    }
+
+    function setSubmissionPassed(string calldata _uid) public onlyOwner {
+        require(submissions[indexBySubmissions[_uid]].result == Result.PENDING, "This submission has already been corrected");
+        submissions[indexBySubmissions[_uid]].result = Result.PASSED;
         emit CorrectedSubmission(tx.origin,_uid);
-
     }
 
-    function getResultSubmission(string calldata _uid) public view returns (Result){
-        return listOfSubmissions[_uid].result;
+    function setSubmissionFailed(string calldata _uid) public onlyOwner {
+        require(submissions[indexBySubmissions[_uid]].result == Result.PENDING, "This submission has already been corrected");
+        submissions[indexBySubmissions[_uid]].result = Result.FAILED;
+        emit CorrectedSubmission(tx.origin,_uid);
     }
-
-    function getAllSubmissionsOfATest(address _test) public view returns(string[] memory){
-        return listOfAllSubmissionsOfATest[_test];
-    }
-
-    function getSubmission(string calldata _uid) public view returns (Submission memory) {
-        return listOfSubmissions[_uid];
-    }
-
 }

@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 
 // Material UI
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+
+// Services
+import { getAllSubmissionsByTest } from '../../services/interface';
+import { retrieveFiles } from '../../services/ipfs';
 
 // Components
 import Layout from '../layouts/Layout';
@@ -30,7 +34,7 @@ const UserContainer = styled.div`
     }
 `;
 
-const submissions = [
+const submissionsDefault = [
     {
         uid: 1,
         user: 'Adeodatus Jason',
@@ -75,7 +79,59 @@ const submissions = [
 
 const Submissions = () => {
     // Hook useParams
-    const params = useParams();
+    const { id } = useParams();
+
+    // States
+    const [submissions, setSubmissions] = useState([]);
+
+
+    useEffect(() => {
+        if (submissions.length === 0) {
+            getSubmissions();
+        }
+    }, []);
+
+    const getSubmissions = async () => {
+
+        try {
+
+            const response = await getAllSubmissionsByTest(id);
+
+            const newSubmissions = await Promise.all(
+                response.map(item => getSubmissionContent(item.cidSubmission, item.date))
+            );
+            
+            setSubmissions(newSubmissions);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getSubmissionContent = async (submissionCid, date) => {
+        
+        try {
+
+            const submission = await retrieveFiles(submissionCid).then(data => JSON.parse(data));
+
+            console.log(submission);
+            
+            // Hardcoded
+            submission.date = new Date(submission.date);
+            submission.user = 'Todo Name';
+            submission.username = 'Todo Username';
+            submission.transaction = 'Todo Transaction';
+
+            return submission;
+            
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getTimeText = seconds => {
+        return seconds && `${("0" + Math.floor(seconds / 60)).slice(-2)} min ${("0" + Math.floor(seconds % 60)).slice(-2)} sec`;
+    }
 
     return (
         <Layout>
@@ -124,7 +180,7 @@ const Submissions = () => {
                                     {item.transaction.substring(item.transaction.length - 4)}
                                 </Cell>
                                 <Cell>{item.date.toLocaleDateString()}</Cell>
-                                <Cell>{item.time} min</Cell>
+                                <Cell>{getTimeText(item.seconds)}</Cell>
                                 <Cell>{item.score}</Cell>
                             </tr>
                         ))}

@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 
+// Services
+import { getAllTests } from '../../services/interface';
+import { retrieveFiles } from '../../services/ipfs';
+
 // Components
 import TestArenaCard from './TestArenaCard';
 
@@ -12,7 +16,7 @@ const Container = styled.div`
     grid-row-gap: 1rem;
 `;
 
-const tests = [
+const testsInit = [
     {
         uid: 1,
         title: 'Solidity Test',
@@ -205,24 +209,72 @@ const tests = [
 ];
 
 const TestArenaList = ({ search }) => {
+
     // States
+    const [tests, setTests] = useState([]);
     const [testsFilter, setTestsFilter] = useState([]);
 
     useEffect(() => {
-        filterTests();
+
+        if (tests.length === 0) {
+            getTests();
+        } else {
+            filterTests(tests);
+        }
+        
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [search]);
 
-    const filterTests = () => {
+    const getTests = async () => {
+
+        try {
+            
+            const response = await getAllTests();
+
+            console.log(response);
+            
+            const newTests = await Promise.all(
+                response.map(item => getTestContent(item.cidTest, item.cidImage))
+            );
+
+            setTests(newTests);
+            filterTests(newTests);
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const getTestContent = async (testCid, imageCid) => {
+        
+        try {
+
+            const [ testContent, imageContent ] =
+                await Promise.all([
+                    retrieveFiles(testCid).then(data => JSON.parse(data)),
+                    retrieveFiles(imageCid)
+                ]);
+
+            testContent.cid = testCid;
+            testContent.image = new File([imageContent], 'sbt-image');
+
+            return testContent;
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    const filterTests = testsSearch => {
         try {
             if (search.trim() === '') {
-                setTestsFilter(tests);
+                setTestsFilter(testsSearch);
             } else {
                 const expression = new RegExp(search.trim(), 'i');
 
                 setTestsFilter(
-                    tests.filter(
+                    testsSearch.filter(
                         test => test.title.search(expression) !== -1 || test.description.search(expression) !== -1
                     )
                 );

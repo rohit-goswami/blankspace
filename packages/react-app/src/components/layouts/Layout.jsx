@@ -8,7 +8,7 @@ import Header from './Header';
 const Main = styled.main`
     max-width: 120rem;
     width: 100%;
-    margin: 10rem auto 0 auto;
+    margin: 11rem auto 0 auto;
     padding: 0 2rem;
 `;
 
