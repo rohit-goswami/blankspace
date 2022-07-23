@@ -67,4 +67,10 @@ contract SBT is Initializable, ERC721Upgradeable, ERC721URIStorageUpgradeable, O
     {
         return super.tokenURI(tokenId);
     }
+
+    function ownerOf(uint256 tokenId) public view virtual override returns (address) {
+        address owner = _owners[tokenId];
+        require(owner != address(0), "ERC721: invalid token ID");
+        return owner;
+    }
 }
