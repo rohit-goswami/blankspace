@@ -8,17 +8,20 @@ contract SubmissionContract {
     struct Submission {
         string cidSubmission;
         address account;
-        address test;
         uint256 date;
         Result result;
     }
 
-    Submission[] listOfAllSubmisions;
-    mapping(address => Submission[]) listOfAllSubmissionsOfATest;
+    uint submissionCounter;
+    Submission[] public submissions; // Submission array
+    mapping(string => uint) public indexBySubmissions; // uid Submission -> index Submission in submissions
+    mapping(string => string[]) public submissionsByTests; // uid Test -> Array uid Submission
+
 
     address owner;   
 
-    event NewSubmission(address indexed from, address indexed test, uint256 indexed date);
+    event NewSubmission(address indexed from, string indexed submissionId, string indexed testId);
+    event CorrectedSubmission(address indexed reviser, string indexed uid);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "You're not the owner of this smart contract");
@@ -29,24 +32,57 @@ contract SubmissionContract {
         owner = msg.sender;
     }
 
-    function newSubmission(string calldata _cidSubmission, address _test) public onlyOwner {
+    function newSubmission(string calldata _submissionId, string calldata _testId, string calldata _cidSubmission) public onlyOwner {
+
+        // Create the Submission
         Submission memory submission = Submission(
             _cidSubmission,
             tx.origin,
-            _test,
             block.timestamp,
             Result.PENDING
         );
-        listOfAllSubmisions.push(submission);
-        listOfAllSubmissionsOfATest[_test].push(submission);
-        emit NewSubmission(tx.origin,_test,block.timestamp);
+
+        // Push the uid to the Test
+        submissionsByTests[_testId].push(_submissionId);
+
+        // Set the index of the test
+        indexBySubmissions[_submissionId] = submissionCounter;
+
+        // Push the Submission to the list
+        submissions.push(submission);
+
+        // Increment the counter
+        submissionCounter += 1;
+
+        emit NewSubmission(tx.origin, _submissionId, _testId);
     }
 
-    function getAllSubmissions() public view returns(Submission[] memory){
-        return listOfAllSubmisions;
+    function getSubmissionById(string calldata _uid) public view returns (Submission memory){
+        return submissions[indexBySubmissions[_uid]];
     }
 
-    function getAllSubmissionsOfATest(address _test) public view returns(Submission[] memory){
-        return listOfAllSubmissionsOfATest[_test];
+    function getAllSubmissionsByTest(string calldata _testId) public view returns(Submission[] memory){
+       Submission[] memory submissionsByTest = new Submission[](submissionsByTests[_testId].length);
+
+        // Loop all the tests of the owner
+        for (uint i = 0; i < submissionsByTests[_testId].length; i++) {
+            string memory uid = submissionsByTests[_testId][i];
+            uint index = indexBySubmissions[uid];
+            submissionsByTest[i] = submissions[index];
+        }
+
+        return submissionsByTest;
+    }
+
+    function setSubmissionPassed(string calldata _uid) public onlyOwner {
+        require(submissions[indexBySubmissions[_uid]].result == Result.PENDING, "This submission has already been corrected");
+        submissions[indexBySubmissions[_uid]].result = Result.PASSED;
+        emit CorrectedSubmission(tx.origin,_uid);
+    }
+
+    function setSubmissionFailed(string calldata _uid) public onlyOwner {
+        require(submissions[indexBySubmissions[_uid]].result == Result.PENDING, "This submission has already been corrected");
+        submissions[indexBySubmissions[_uid]].result = Result.FAILED;
+        emit CorrectedSubmission(tx.origin,_uid);
     }
 }

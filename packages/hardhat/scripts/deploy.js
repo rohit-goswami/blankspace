@@ -4,16 +4,24 @@ const hre = require("hardhat");
 
 async function main() {
 
-  const Sbt = await ethers.getContractFactory("Interface");
-  const sbt = await Sbt.deploy();
-  await sbt.deployed();
+	// Interface
+	const Interface = await ethers.getContractFactory("Interface");
+	const interface = await Interface.deploy();
+	await interface.deployed();
 
-  console.log("contract deployed at :", sbt.address);
+	console.log("Contract interface deployed at :", interface.address);
+
+	// Tests
+	const Test = await ethers.getContractFactory("TestContract");
+	const test = await Test.deploy();
+	await test.deployed();
+
+	console.log("Contract test deployed at :", test.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
 // and properly handle errors.
 main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
+	console.error(error);
+	process.exitCode = 1;
 });

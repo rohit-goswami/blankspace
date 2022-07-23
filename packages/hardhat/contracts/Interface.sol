@@ -25,22 +25,30 @@ contract Interface {
         submission = address(new SubmissionContract());
     }
 
-    // SBTFactory functions
+    /**
+     * SBTFactory Functions
+    */
     function addNewAccount(address _account) external onlyOwner {
         SBTFactory(sbtFactory).addNewAccount(_account);
+    }
+
+    function createSBTAllowed(address _account) public view returns(bool){
+        return SBTFactory(sbtFactory).allowedAddresses(_account);
     }
 
     function removeAccount(address _account) external onlyOwner {
         SBTFactory(sbtFactory).removeAccount(_account);
     }
 
-    function createSBT(string calldata _name, string calldata _symbol, string calldata _cidImage, string calldata _cidTest) external  returns (address) {
+    function createSBT(string calldata _name, string calldata _symbol, string calldata _cidImage, string calldata _cidTest, string calldata _uid) external  returns (address) {
         address newTestAddress = SBTFactory(sbtFactory).createSBT(_name,_symbol);
-        newTest(_cidImage,_cidTest,newTestAddress);
+        newTest(_cidImage,_cidTest,newTestAddress,_uid);
         return newTestAddress;
     }
 
-    // SBT Functions
+    /**
+     * SBT Functions
+    */
     function mint(address _contract, address _to, string calldata _cid) external {
         SBTFactory(sbtFactory).mint(_contract,_to,_cid);
     }
@@ -49,29 +57,47 @@ contract Interface {
          SBTFactory(sbtFactory).revoke(_contract,_tokenId);
     }
 
-    // TestContract Functions
-    function newTest(string calldata _cidImage, string calldata _cidTest, address _test) internal {
-        TestContract(test).newTest(_cidImage,_cidTest,_test);
+    /**
+     * TestContract Functions
+    */
+    function newTest(string calldata _cidImage, string calldata _cidTest, address _test, string calldata _uid) internal {
+        TestContract(test).newTest(_cidImage,_cidTest,_test,_uid);
+    }
+
+    function getTestById(string calldata _uid) public view returns(TestContract.Test memory) {
+        return TestContract(test).getTestById(_uid);
     }
 
     function getAllTests() public view returns(TestContract.Test[] memory) {
         return TestContract(test).getAllTests();
     }
 
-    function getAllTestsOfACompany(address _company) public view returns(TestContract.Test[] memory) {
-        return TestContract(test).getAllTestsOfACompany(_company);
+    function getAllTestsByOwner(address _owner) public view returns(TestContract.Test[] memory) {
+        return TestContract(test).getAllTestsByOwner(_owner);
     }
 
-    // SumbissionContract Functions
-    function newSubmission(string calldata uidSubmission, string calldata _cidSubmission, address _test) public {
-        SubmissionContract(submission).newSubmission(_cidSubmission,_test);
+    /**
+     * SumbissionContract Functions
+    */
+    function newSubmission(string calldata _submissionId, string calldata _testId, string calldata _cidSubmission) public {
+        SubmissionContract(submission).newSubmission(_submissionId, _testId, _cidSubmission);
     }
 
-    function getAllSubmissions() public view returns(SubmissionContract.Submission[] memory) {
-        return SubmissionContract(submission).getAllSubmissions();
+    function getSubmissionById(string calldata _uid) public view returns(SubmissionContract.Submission memory){
+        return SubmissionContract(submission).getSubmissionById(_uid);
     }
 
-    function getAllSubmissionsOfATest(address _test) public view returns(SubmissionContract.Submission[] memory) {
-        return SubmissionContract(submission).getAllSubmissionsOfATest(_test);
+    function getAllSubmissionsByTest(string calldata _uid) public view returns(SubmissionContract.Submission[] memory) {
+        return SubmissionContract(submission).getAllSubmissionsByTest(_uid);
+    }
+
+    function setSubmissionPassed(string calldata _uid) public  {
+        require(SBTFactory(sbtFactory).ownerOfSBT(getSubmissionById(_uid).account) == msg.sender,"You cannot correct this submission");
+        SubmissionContract(submission).setSubmissionPassed(_uid);
+    }
+
+    function setSubmissionFailed(string calldata _uid) public  {
+        require(SBTFactory(sbtFactory).ownerOfSBT(getSubmissionById(_uid).account) == msg.sender,"You cannot correct this submission");
+        SubmissionContract(submission).setSubmissionFailed(_uid);
     }
 }

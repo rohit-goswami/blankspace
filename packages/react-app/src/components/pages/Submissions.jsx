@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 // Services
-import { getAllSubmissionsOfATest } from '../../services/interface';
+import { getAllSubmissionsByTest } from '../../services/interface';
 import { retrieveFiles } from '../../services/ipfs';
 
 // Components
@@ -79,7 +79,7 @@ const submissionsDefault = [
 
 const Submissions = () => {
     // Hook useParams
-    const params = useParams();
+    const { id } = useParams();
 
     // States
     const [submissions, setSubmissions] = useState([]);
@@ -95,11 +95,7 @@ const Submissions = () => {
 
         try {
 
-            const address = '0x4CEc804494d829bEA93AB8eA7045A7efBED3c229';
-
-            const response = await getAllSubmissionsOfATest(address);
-
-            console.log(response);
+            const response = await getAllSubmissionsByTest(id);
 
             const newSubmissions = await Promise.all(
                 response.map(item => getSubmissionContent(item.cidSubmission, item.date))

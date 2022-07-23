@@ -115,6 +115,7 @@ const CreateTest = () => {
     const inputFileRef = useRef(null);
 
     // States
+    const [testId, setTestId] = useState('');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [level, setLevel] = useState(null);
@@ -130,6 +131,10 @@ const CreateTest = () => {
     const [createTestEnable, setCreateTestEnable] = useState(true);
 
     useEffect(() => {
+        if (!testId) {
+            setTestId(uuidv4());
+        }
+
         if (!level) {
             setLevel(levels[0]);
         }
@@ -179,7 +184,7 @@ const CreateTest = () => {
             e.preventDefault();
     
             const test = {
-                uid: uuidv4(),
+                uid: testId,
                 owner: getCurrentAddress(),
                 title,
                 description,
@@ -240,7 +245,7 @@ const CreateTest = () => {
             
             e.preventDefault();
 
-            await createSBT(getSbtName(), 'SBT', imageCID, testCID);
+            await createSBT(getSbtName(), 'SBT', imageCID, testCID, testId);
 
             navigate('/test-arena');
 

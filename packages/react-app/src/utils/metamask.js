@@ -9,6 +9,6 @@ export const getCurrentAddress = async () => {
         return account;
         
     } catch (error) {
-        console.log();
+        console.log(error);
     }
 }

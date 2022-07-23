@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 import { v4 as uuidv4 } from 'uuid';
 
 // Services
-import { newSubmission } from '../../services/interface';
+import { newSubmission, getTestById } from '../../services/interface';
 import { storeFile, retrieveFiles } from '../../services/ipfs';
 
 // Components
@@ -211,7 +211,7 @@ const DefaultTest = {
 
 const Test = () => {
     // Hook useParams
-    const params = useParams();
+    const { id } = useParams();
 
     // Hook useNavigate
     const navigate = useNavigate();
@@ -224,7 +224,7 @@ const Test = () => {
     const [timeout, setTimeout] = useState(false);
 
     useEffect(() => {
-        if (!loaded) {
+        if (!loaded && id) {
             getTest();
             setLoaded(true);
         }
@@ -234,14 +234,14 @@ const Test = () => {
 
     const getTest = async () => {
         try {
-            
-            const cid = 'bafybeidjceiw3hueove254ypvqrqkqiektgx2rkik5mxvtu724bckruwba';
 
-            const response = await retrieveFiles(cid);
-            
-            setTest(JSON.parse(response));
+            // Get the test from the smart contract
+            const response = await getTestById(id);
 
-            console.log(JSON.parse(response));
+            // Get the content of the test
+            const content = await retrieveFiles(response.cidTest);
+
+            setTest(JSON.parse(content));
 
         } catch (error) {
             console.log(error);
@@ -274,7 +274,7 @@ const Test = () => {
     
             const cid = await storeFile(submission);
 
-            await newSubmission(cid, '0x4CEc804494d829bEA93AB8eA7045A7efBED3c229');
+            await newSubmission(submission.uid, test.uid, cid);
 
             navigate('/test-arena');
             
