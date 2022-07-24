@@ -133,7 +133,7 @@ const Test = () => {
 
             await newSubmission(submission.uid, test.uid, cid, test.sbt);
 
-            navigate('/test-arena');
+            navigate('/pos-arena');
             
         } catch (error) {
             console.log(error);

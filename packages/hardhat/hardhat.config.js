@@ -5,19 +5,20 @@ require("@nomicfoundation/hardhat-toolbox");
 require('dotenv').config();
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
 
 module.exports = {
   // defaultNetwork: "matic",
-  // networks: {
-  //   hardhat: {
-  //   },
-  //   mumbai: {
-  //     url: "https://rpc-mumbai.maticvigil.com",
-  //     accounts: [process.env.PRIVATE_KEY]
-  //   }
-  // },
+  networks: {
+    hardhat: {
+    },
+    mumbai: {
+      url: "https://rpc-mumbai.maticvigil.com",
+      accounts: [PRIVATE_KEY]
+    }
+  },
   solidity: {
-    version: "0.8.4",
+    version: "0.8.7",
     settings: {
       optimizer: {
         enabled: true,
@@ -33,5 +34,8 @@ module.exports = {
   },
   mocha: {
     timeout: 20000
+  },
+  etherscan: {
+    apiKey: POLYGONSCAN_API_KEY,
   }
 };

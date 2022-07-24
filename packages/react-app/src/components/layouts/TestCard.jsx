@@ -44,10 +44,10 @@ const ButtonsContainer = styled.div`
     justify-content: center;
 `;
 
-const TestArenaCard = ({ test }) => {
+const TestCard = ({ test }) => {
     return (
         <Container>
-            <img src={`https://ipfs.io/ipfs/${test.imageCid}/sbt-image.png`} alt='SBT' width={60} />
+            <img src={`https://ipfs.io/ipfs/${test.imageCid}/sbt-image.svg`} alt='SBT' width={60} />
             <p className='title'>{test.title}</p>
             <p className='description'>{test.description}</p>
             <p className='time'>{test.minutes} min</p>
@@ -64,4 +64,4 @@ const TestArenaCard = ({ test }) => {
     );
 };
 
-export default TestArenaCard;
+export default TestCard;
