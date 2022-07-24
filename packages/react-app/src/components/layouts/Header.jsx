@@ -114,7 +114,7 @@ const Header = () => {
                     </Link>
 
                     <Nav>
-                        <NavItem to='/'>Home</NavItem>
+                        <NavItem to='/home'>Home</NavItem>
                         <NavItem to='/test-arena'>Test Arena</NavItem>
                     </Nav>
 
