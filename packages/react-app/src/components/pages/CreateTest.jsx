@@ -193,8 +193,6 @@ const CreateTest = () => {
                 questions,
             };
     
-            console.log(test);
-    
             // Push the test to IPFS and its cid on chain
             const cid = await storeFile(test);
             setTestCID(cid);

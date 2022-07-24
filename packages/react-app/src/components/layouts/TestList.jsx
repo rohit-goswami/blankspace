@@ -232,8 +232,6 @@ const TestList = ({ search }) => {
             
             const response = await getAllTests();
 
-            console.log(response);
-            
             const newTests = await Promise.all(
                 response.map(item => getTestContent(item.cidTest, item.cidImage))
             );
