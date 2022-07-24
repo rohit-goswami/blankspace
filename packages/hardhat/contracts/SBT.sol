@@ -23,11 +23,12 @@ contract SBT is Initializable, ERC721Upgradeable, ERC721URIStorageUpgradeable, O
     }
 
 
-    function mint(address to, string memory uri)  public onlyOwner {
+    function mint(address to, string memory uri)  public onlyOwner returns(uint256){
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
         _setTokenURI(tokenId, uri);
+        return tokenId;
     }
 
     function burn(uint256 tokenId) external {
@@ -68,9 +69,4 @@ contract SBT is Initializable, ERC721Upgradeable, ERC721URIStorageUpgradeable, O
         return super.tokenURI(tokenId);
     }
 
-    function ownerOf(uint256 tokenId) public view virtual override returns (address) {
-        address owner = _owners[tokenId];
-        require(owner != address(0), "ERC721: invalid token ID");
-        return owner;
-    }
 }

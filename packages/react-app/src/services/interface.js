@@ -30,13 +30,13 @@ export async function createSBTAllowed(account) {
 }
 
 // To create a new smart contract and sotre the cid onchain
-export async function createSBT(name, symbol,cidImage,cidTest,uidTest) {
+export async function createSBT(name, symbol, cidImage, cidTest, uidTest) {
     if (typeof window.ethereum !== 'undefined') {
         await requestAccount();
         const provider = newProvider();
         const signer = provider.getSigner();
         const contract = instanceContract(InterfaceAddress, Interface.abi, signer);
-        const tx = await contract.createSBT(name, symbol,cidImage,cidTest,uidTest);
+        const tx = await contract.createSBT(name, symbol, cidImage, cidTest, uidTest);
         await tx.wait();
     }
 }
@@ -46,13 +46,13 @@ export async function createSBT(name, symbol,cidImage,cidTest,uidTest) {
  */
 
 // To mint a new SBT
-export async function mintSBT(contractAddress, to,cidImage) {
+export async function mintSBT(contractAddress, to, cidImage) {
     if (typeof window.ethereum !== 'undefined') {
         await requestAccount();
         const provider = newProvider();
         const signer = provider.getSigner();
         const contract = instanceContract(InterfaceAddress, Interface.abi, signer);
-        const tx = await contract.mint(contractAddress,to,cidImage);
+        const tx = await contract.mint(contractAddress, to, cidImage);
         await tx.wait();
     }
 }
@@ -64,10 +64,20 @@ export async function revokeSBT(contractAddress, tokenID) {
         const provider = newProvider();
         const signer = provider.getSigner();
         const contract = instanceContract(InterfaceAddress, Interface.abi, signer);
-        const tx = await contract.revoke(contractAddress,tokenID);
+        const tx = await contract.revoke(contractAddress, tokenID);
         await tx.wait();
     }
 }
+
+// To get the owner of a SBT
+export async function getOwnerOfToken(contractAddress,tokenID) {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        return contract.getOwnerOfToken(contractAddress,tokenID);
+    }
+}
+
 
 /**
  * TestContract Functions
@@ -145,17 +155,16 @@ export async function getResultSubmission(uidSubmission) {
 }
 // To set the result of a submission, pass a 1 if the submission is passed.
 // or 2 if the submission is failed.
-export async function setResultSubmission(uidSubmission,result) {
+export async function setResultSubmission(uidSubmission, result) {
     if (typeof window.ethereum !== 'undefined') {
         await requestAccount();
         const provider = newProvider();
         const signer = provider.getSigner();
         const contract = instanceContract(InterfaceAddress, Interface.abi, signer);
-        const tx = await contract.setResultSubmission(uidSubmission,result);
+        const tx = await contract.setResultSubmission(uidSubmission, result);
         await tx.wait();
     }
 }
-
 
 export async function setSubmissionPassed(uidSubmission) {
     if (typeof window.ethereum !== 'undefined') {
@@ -176,5 +185,79 @@ export async function setSubmissionFailed(uidSubmission) {
         const contract = instanceContract(InterfaceAddress, Interface.abi, signer);
         const tx = await contract.setSubmissionFailed(uidSubmission);
         await tx.wait();
+    }
+}
+
+/**
+ * Events Functions
+ */
+
+export async function eventCreateSBT() {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        contract.on('CreateSBT', (from, sbt, event) => {
+            console.log({ from, sbt, event });
+        });
+    }
+}
+
+export async function eventMint() {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        contract.on('Mint', (to, tokenId, sbt, event) => {
+            console.log({ to, tokenId,sbt, event });
+        });
+    }
+}
+
+export async function eventRevoke() {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        contract.on('Revoke', (from, tokenID, sbt, event) => {
+            console.log({ from, tokenID, sbt, event });
+        });
+    }
+}
+
+export async function eventNewTest() {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        contract.on('NewTest', (from, uid, sbt, event) => {
+            console.log({ from, uid, sbt, event });
+        });
+    }
+}
+
+export async function eventNewSubmission() {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        contract.on('NewSubmission', (from, uid, sbt, event) => {
+            console.log({ from, uid, sbt, event });
+        });
+    }
+}
+
+export async function eventSetSubmissionPassed() {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        contract.on('SetSubmissionPassed', (from, uid, event) => {
+            console.log({ from, uid, event });
+        });
+    }
+}
+
+export async function eventSetSubmissionFailed() {
+    if (typeof window.ethereum !== 'undefined') {
+        const provider = newProvider();
+        const contract = instanceContract(InterfaceAddress, Interface.abi, provider);
+        contract.on('SetSubmissionFailed', (from, uid, event) => {
+            console.log({ from, uid, event });
+        });
     }
 }
