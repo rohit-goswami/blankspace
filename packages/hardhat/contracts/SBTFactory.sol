@@ -46,13 +46,17 @@ contract SBTFactory {
     }
 
 
-    function mint(address _contract, address _to, string calldata _cid) public onlyAllowedAccounts {
+    function mint(address _contract, address _to, string calldata _cid) public onlyAllowedAccounts returns(uint256){
         require(ownerOfSBT[_contract] == tx.origin, "You're not the owner of this SBT contract");
-        SBT(_contract).mint(_to,_cid);
+        return SBT(_contract).mint(_to,_cid);
     }
 
     function revoke(address _contract, uint256 _tokenId) public onlyAllowedAccounts {
         require(ownerOfSBT[_contract] == tx.origin, "You're not the owner of this SBT contract");
         SBT(_contract).revoke(_tokenId);
+    }
+    
+    function ownerOf(address _contract, uint256 _tokenId) public view returns (address){
+        return SBT(_contract).ownerOf(_tokenId);
     }
 } 
