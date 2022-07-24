@@ -8,8 +8,8 @@
     "compile": "cd packages/hardhat && npx hardhat compile",
     "deploy": "cd packages/hardhat && npx hardhat run scripts/deploy.js --network localhost",
     "test": "cd packages/hardhat && npx hardhat test",
-    "node": "cd packages/hardhat && npx hardhat node"
-
+    "node": "cd packages/hardhat && npx hardhat node",
+    "install": "cd packages/hardhat && npm i && cd ../react-app && npm i && cd ../subgraph && npm i"
   },
   "keywords": [],
   "author": "",

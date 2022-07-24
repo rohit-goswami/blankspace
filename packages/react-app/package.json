@@ -2,20 +2,39 @@
   "name": "react-app",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "dependencies": {
+    "@emotion/react": "^11.9.3",
+    "@emotion/styled": "^11.9.3",
+    "@metamask/onboarding": "^1.0.1",
+    "@mui/icons-material": "^5.8.4",
+    "@mui/material": "^5.9.0",
     "@testing-library/jest-dom": "^5.16.4",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^0.27.2",
+    "dotenv": "^16.0.1",
+    "ethers": "^5.6.9",
+    "fs": "^0.0.1-security",
+    "graphql": "^16.5.0",
+    "lit-js-sdk": "^1.1.202",
+    "prettier": "^2.7.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-router-dom": "^6.3.0",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4"
+    "styled-components": "^5.3.5",
+    "urql": "^2.2.3",
+    "uuid": "^8.3.2",
+    "web-vitals": "^2.1.4",
+    "web3.storage": "^4.3.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "format": "prettier --write \"src/**/*.js\" \"src/**/*.jsx\" \"src/**/*.css\""
   },
   "eslintConfig": {
     "extends": [
