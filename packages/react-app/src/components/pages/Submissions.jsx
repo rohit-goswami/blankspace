@@ -6,7 +6,7 @@ import styled from '@emotion/styled';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 // Services
-import { getAllSubmissionsByTest, setSubmissionFailed } from '../../services/interface';
+import { getAllSubmissionsByTest } from '../../services/interface';
 import { retrieveFiles } from '../../services/ipfs';
 
 // Components
@@ -14,6 +14,9 @@ import Layout from '../layouts/Layout';
 import { TableContainer, Table, Column, Cell } from '../ui/Table';
 import Title from '../ui/Title';
 import { Button } from '../ui/Button';
+
+// Utils
+import { getShortFormatAddress } from '../../utils/metamask';
 
 // Styled
 const UserContainer = styled.div`
@@ -34,49 +37,6 @@ const UserContainer = styled.div`
         font-size: 1.2rem;
     }
 `;
-
-const submissionsDefault = [
-    {
-        uid: 1,
-        user: 'Adeodatus Jason',
-        transaction: '0x9746f6940E2eb28930eFb4CeF49B2d1F2C9C5184',
-        date: new Date(2022, 7, 10),
-        time: 24,
-        score: 7,
-    },
-    {
-        uid: 2,
-        user: 'Alla Sibusiso',
-        transaction: '0x6563f6940E2eb28930eFb4CeF49B2d1F2C9C5478',
-        date: new Date(2022, 7, 11),
-        time: 10,
-        score: 4,
-    },
-    {
-        uid: 3,
-        user: 'Breda Lexy',
-        transaction: '0x3549f6940E2eb28930eFb4CeF49B2d1F2C9C6548',
-        date: new Date(2022, 7, 10),
-        time: 20,
-        score: 6,
-    },
-    {
-        uid: 4,
-        user: 'Melanija Crescens',
-        transaction: '0x6489f6940E2eb28930eFb4CeF49B2d1F2C9C2154',
-        date: new Date(2022, 7, 14),
-        time: 27,
-        score: 8,
-    },
-    {
-        uid: 5,
-        user: 'Oddvarr Joel',
-        transaction: '0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C5184',
-        date: new Date(2022, 7, 19),
-        time: 15,
-        score: 10,
-    },
-];
 
 const Submissions = () => {
     // Hook useParams
@@ -180,10 +140,7 @@ const Submissions = () => {
                                         </div>
                                     </UserContainer>
                                 </Cell>
-                                <Cell>
-                                    {item.transaction.substring(0, 6)}...
-                                    {item.transaction.substring(item.transaction.length - 4)}
-                                </Cell>
+                                <Cell>{getShortFormatAddress(item.transaction)}</Cell>
                                 <Cell>{item.date.toLocaleDateString()}</Cell>
                                 <Cell>{getTimeText(item.seconds)}</Cell>
                                 <Cell>
