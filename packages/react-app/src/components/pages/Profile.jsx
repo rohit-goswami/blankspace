@@ -114,7 +114,7 @@ const Profile = () => {
             });
             
         } catch (error) {
-            console.log();
+            console.log(error);
         }
     }
 

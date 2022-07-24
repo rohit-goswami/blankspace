@@ -55,13 +55,20 @@ contract Interface {
         return newTestAddress;
     }
 
-    
+    function createSBTPoM(string calldata _name, string calldata _symbol, string calldata _cid) external returns (address) {
+        return SBTFactory(sbtFactory).createSBTPoM(_name, _symbol, _cid);
+    }
 
     /**
      * SBT Functions
     */
     function mint(address _contract, address _to, string calldata _cid) external {
         uint256 tokenId = SBTFactory(sbtFactory).mint(_contract,_to,_cid);
+        emit Mint(_to, tokenId, _contract);
+    }
+
+    function mintPoM(address _contract, address _to) external {
+        uint256 tokenId = SBTFactory(sbtFactory).mintPoM(_contract, _to);
         emit Mint(_to, tokenId, _contract);
     }
 
@@ -72,6 +79,10 @@ contract Interface {
 
     function getOwnerOfToken(address _contract, uint256 _tokenId) public view returns (address) {
         return SBTFactory(sbtFactory).ownerOf(_contract, _tokenId);
+    }
+
+    function getBalanceOf(address _contract, address _address) public view returns (uint256) {
+        return SBTFactory(sbtFactory).balanceOf(_contract, _address);
     }
 
     /**
