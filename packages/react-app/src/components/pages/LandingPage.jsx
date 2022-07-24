@@ -119,7 +119,9 @@ const LandingPage = () => {
                             <p style={{ fontSize: '2.4rem', marginTop: '6rem', lineHeight: '1.2' }}>
                                 We at blankSpace aims to bridge the gap between skilled people and the organizations. Leveraging Ethereum, Polygon, IPFS technology to decentraliz the way we connect in professional world today
                             </p>
-                            <WhitePaperButton>Whitepaper</WhitePaperButton>
+                            <a href='https://drive.google.com/file/d/15tdHIoT6WHYc18UGG2sXnA_Aih7zS0M5/view?usp=sharing' target='_blank'>
+                                <WhitePaperButton>Whitepaper</WhitePaperButton>
+                            </a>
                         </div>
 
                         <div style={{ flex: '0 0 50rem', width: '60rem', height: '48rem', overflow: 'hidden' }}>
@@ -132,7 +134,7 @@ const LandingPage = () => {
 
                         <GalaxyGallery>
                             <GalaxyContainer enable>
-                                <Link to='/test-arena' target='_blank'>
+                                <Link to='/pos-arena' target='_blank'>
                                     <img src='/PoS-Arena Galaxy.svg' alt='PoS Arena' />
                                 </Link>
 

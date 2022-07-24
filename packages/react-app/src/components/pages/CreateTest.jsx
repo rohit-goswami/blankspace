@@ -247,7 +247,7 @@ const CreateTest = () => {
 
             await createSBT(getSbtName(), 'SBT', imageCID, testCID, testId);
 
-            navigate('/test-arena');
+            navigate('/pos-arena');
 
         } catch (error) {
             console.log(error);
@@ -360,7 +360,7 @@ const CreateTest = () => {
         const optionId = e.target.id.split('#')[2];
         const question = questions.find(item => item.uid === questionId);
         const option = question.options.find(item => item.uid === optionId);
-        option.option = e.target.value;
+        option.caption = e.target.value;
 
         setQuestions([
             ...questions.filter(item => item.uid !== questionId),

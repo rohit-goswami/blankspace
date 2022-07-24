@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import Interface from '../contracts/Interface.sol/Interface.json';
 
-const InterfaceAddress = '0x0165878A594ca255338adfa4d48449f69242Eb8F';
+const InterfaceAddress = '0x2B3283c1FB6cD361ACd3a837F8AB6BDD822531B6';
 
 async function requestAccount() {
     await window.ethereum.request({ method: 'eth_requestAccounts' });
@@ -184,6 +184,682 @@ export async function setSubmissionFailed(uidSubmission) {
         const signer = provider.getSigner();
         const contract = instanceContract(InterfaceAddress, Interface.abi, signer);
         const tx = await contract.setSubmissionFailed(uidSubmission);
+        await tx.wait();
+    }
+}
+
+const InterfaceAbi = [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sbt",
+          "type": "address"
+        }
+      ],
+      "name": "CreateSBT",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "to",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sbt",
+          "type": "address"
+        }
+      ],
+      "name": "Mint",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "string",
+          "name": "uid",
+          "type": "string"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sbt",
+          "type": "address"
+        }
+      ],
+      "name": "NewSubmission",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "string",
+          "name": "uid",
+          "type": "string"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sbt",
+          "type": "address"
+        }
+      ],
+      "name": "NewTest",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "uint256",
+          "name": "tokenID",
+          "type": "uint256"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sbt",
+          "type": "address"
+        }
+      ],
+      "name": "Revoke",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "string",
+          "name": "uid",
+          "type": "string"
+        }
+      ],
+      "name": "SetSubmissionFailed",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "from",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "string",
+          "name": "uid",
+          "type": "string"
+        }
+      ],
+      "name": "SetSubmissionPassed",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_account",
+          "type": "address"
+        }
+      ],
+      "name": "addNewAccount",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_symbol",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_cidImage",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_cidTest",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_uid",
+          "type": "string"
+        }
+      ],
+      "name": "createSBT",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_account",
+          "type": "address"
+        }
+      ],
+      "name": "createSBTAllowed",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_name",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_symbol",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_cid",
+          "type": "string"
+        }
+      ],
+      "name": "createSBTPoM",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_uid",
+          "type": "string"
+        }
+      ],
+      "name": "getAllSubmissionsByTest",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "cidSubmission",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "sbt",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "date",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum SubmissionContract.Result",
+              "name": "result",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct SubmissionContract.Submission[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllTests",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "cidImage",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "cidTest",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "ownerTest",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "sbt",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "date",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct TestContract.Test[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_owner",
+          "type": "address"
+        }
+      ],
+      "name": "getAllTestsByOwner",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "cidImage",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "cidTest",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "ownerTest",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "sbt",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "date",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct TestContract.Test[]",
+          "name": "",
+          "type": "tuple[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_contract",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "getBalanceOf",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_contract",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "getOwnerOfToken",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_uid",
+          "type": "string"
+        }
+      ],
+      "name": "getSubmissionById",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "cidSubmission",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "account",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "sbt",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "date",
+              "type": "uint256"
+            },
+            {
+              "internalType": "enum SubmissionContract.Result",
+              "name": "result",
+              "type": "uint8"
+            }
+          ],
+          "internalType": "struct SubmissionContract.Submission",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_uid",
+          "type": "string"
+        }
+      ],
+      "name": "getTestById",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "string",
+              "name": "cidImage",
+              "type": "string"
+            },
+            {
+              "internalType": "string",
+              "name": "cidTest",
+              "type": "string"
+            },
+            {
+              "internalType": "address",
+              "name": "ownerTest",
+              "type": "address"
+            },
+            {
+              "internalType": "address",
+              "name": "sbt",
+              "type": "address"
+            },
+            {
+              "internalType": "uint256",
+              "name": "date",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct TestContract.Test",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_contract",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_to",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "_cid",
+          "type": "string"
+        }
+      ],
+      "name": "mint",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_contract",
+          "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_to",
+          "type": "address"
+        }
+      ],
+      "name": "mintPoM",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_submissionId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_testId",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "_cidSubmission",
+          "type": "string"
+        },
+        {
+          "internalType": "address",
+          "name": "_sbt",
+          "type": "address"
+        }
+      ],
+      "name": "newSubmission",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_account",
+          "type": "address"
+        }
+      ],
+      "name": "removeAccount",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_contract",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_tokenId",
+          "type": "uint256"
+        }
+      ],
+      "name": "revoke",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_uid",
+          "type": "string"
+        }
+      ],
+      "name": "setSubmissionFailed",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "string",
+          "name": "_uid",
+          "type": "string"
+        }
+      ],
+      "name": "setSubmissionPassed",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ]
+
+export async function addAccount() {
+    if (typeof window.ethereum !== 'undefined') {
+        await requestAccount();
+        const provider = newProvider();
+        console.log('Hello1');
+        const contract = new ethers.Contract('0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199', InterfaceAbi, provider);
+        console.log('Hello2');
+        const tx = await contract.addNewAccount('0x8626f6940E2eb28930eFb4CeF49B2d1F2C9C1199');
+        console.log('Hello3');
         await tx.wait();
     }
 }

@@ -3,18 +3,18 @@ import React, { useState } from 'react';
 // Components
 import Layout from '../layouts/Layout';
 import TestArenaBar from '../layouts/TestArenaBar';
-import TestArenaList from '../layouts/TestArenaList';
+import TestList from '../layouts/TestList';
 
-const TestArena = () => {
+const PoSArena = () => {
     // States
     const [search, setSearch] = useState('');
 
     return (
         <Layout>
             <TestArenaBar onSearch={text => setSearch(text)} />
-            <TestArenaList search={search} />
+            <TestList search={search} />
         </Layout>
     );
 };
 
-export default TestArena;
+export default PoSArena;

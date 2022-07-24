@@ -22,8 +22,7 @@ contract SBT is Initializable, ERC721Upgradeable, ERC721URIStorageUpgradeable, O
         __Ownable_init();
     }
 
-
-    function mint(address to, string memory uri)  public onlyOwner returns(uint256){
+    function mint(address to, string memory uri) public virtual onlyOwner returns(uint256){
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);

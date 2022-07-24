@@ -6,7 +6,7 @@ import { getAllTests } from '../../services/interface';
 import { retrieveFiles } from '../../services/ipfs';
 
 // Components
-import TestArenaCard from './TestArenaCard';
+import TestCard from './TestCard';
 
 // Styled
 const Container = styled.div`
@@ -208,7 +208,7 @@ const testsInit = [
     },
 ];
 
-const TestArenaList = ({ search }) => {
+const TestList = ({ search }) => {
 
     // States
     const [tests, setTests] = useState([]);
@@ -284,11 +284,11 @@ const TestArenaList = ({ search }) => {
         <>
             <Container>
                 {testsFilter.map(test => (
-                    <TestArenaCard key={test.uid} test={test} />
+                    <TestCard key={test.uid} test={test} />
                 ))}
             </Container>
         </>
     );
 };
 
-export default TestArenaList;
+export default TestList;
