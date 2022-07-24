@@ -1,9 +1,13 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 // Components
 import MetaMask from '../ui/MetaMask';
+import ProfilePicture from '../ui/ProfilePicture';
+
+// Utils
+import { getCurrentAddress } from '../../utils/metamask';
 
 // Styled
 const HeaderStyled = styled.header`
@@ -71,6 +75,33 @@ const NavItem = styled(Link)`
 `;
 
 const Header = () => {
+
+    // Hook useNavigate
+    const navigate = useNavigate();
+
+    // States
+    const [address, setAddress] = useState('');
+
+    useEffect(() => {
+
+        if (!address) {
+            getAddress();
+        }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const getAddress = async () => {
+
+        try {
+
+            setAddress(await getCurrentAddress());
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     return (
         <div style={{ position: 'fixed', width: '100%', top: '0', background: 'var(--purple)', zIndex: '1' }}>
             <HeaderStyled>
@@ -88,6 +119,11 @@ const Header = () => {
                     </Nav>
 
                     <DivFlexCenter>
+                        <ProfilePicture
+                            width={32}
+                            cursor='pointer'
+                            onClick={() => navigate(`/profile/${address}`)}
+                        />
                         <MetaMask />
                     </DivFlexCenter>
                 </HeaderContainer>
