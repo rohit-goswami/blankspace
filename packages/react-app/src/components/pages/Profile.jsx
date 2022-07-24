@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from '@emotion/styled';
 
+// Services
+import { getGallery } from '../../services/nftport';
+
 // Components
 import Layout from '../layouts/Layout';
 import ProfilePicture from '../ui/ProfilePicture';
 
 // Utils
 import { getShortFormatAddress } from '../../utils/metamask';
-import { retrieveFiles } from '../../services/ipfs';
 
 // Styled
 const ProfileContainer = styled.div`
@@ -61,7 +63,7 @@ const OtherInfoContainer = styled.div`
 
 const SbtGallery = styled.div`
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 15rem));
     grid-column-gap: 1rem;
     grid-row-gap: 1rem;
 `;
@@ -120,55 +122,36 @@ const Profile = () => {
 
         try {
 
-            const response = [{
-                address: '0x8626f6940e2eb28930efb4cef49b2d1f2c9c5166',
-                name: 'Solidity Basic',
-                cidImage: 'bafybeibtedjwiatmi3ftk23xrtnb67akvcuo6uaij4x5xjj7yrb2nijvou',
-                owner: '0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199',
-                date: new Date(2022, 7, 19)
-            }, {
-                address: '0x8626f6940e2eb28930efb4cef49b2d1f2c9c4444',
-                name: 'NFT Basic',
-                cidImage: 'bafybeihvlne4pbxvmvpwi2zeaushifcpcxeccatlhyxbfmitc6pgykkliu',
-                owner: '0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199',
-                date: new Date(2022, 7, 20)
-            }, {
-                address: '0x8626f6940e2eb28930efb4cef49b2d1f2c9c3333',
-                name: 'Solidity Intermediate',
-                cidImage: 'bafybeibtedjwiatmi3ftk23xrtnb67akvcuo6uaij4x5xjj7yrb2nijvou',
-                owner: '0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199',
-                date: new Date(2022, 7, 21)
-            }, {
-                address: '0x8626f6940e2eb28930efb4cef49b2d1f2c9c1453',
-                name: 'Solidity Advanced',
-                cidImage: 'bafybeihvlne4pbxvmvpwi2zeaushifcpcxeccatlhyxbfmitc6pgykkliu',
-                owner: '0x8626f6940e2eb28930efb4cef49b2d1f2c9c1199',
-                date: new Date(2022, 7, 23)
-            }];
+            const response = await getGallery(address);
 
-            const sbts = await Promise.all(response.map(getImage));
+            const sbts = await Promise.all(response.map(item => getImage(item.metadata)));
 
-            setSbtGallery(sbts);
-            
+            setSbtGallery(sbts.filter(item => item !== null));
+
         } catch (error) {
             console.log(error);
         }
     }
 
-    const getImage = async sbt => {
+    const getImage = async metadata => {
         
         try {
 
-            const image = await retrieveFiles(sbt.cidImage);
-            sbt.image = image;
+            if (!metadata) {
+                return null;
+            }
 
-            return sbt
+            if (metadata.image.startsWith("ipfs://")) {
+                metadata.image = metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/");
+            }
+
+            return metadata;
 
         } catch (error) {
             console.log(error);
         }
     }
-
+    
     return (
         <Layout>
             <ProfileContainer>
@@ -190,16 +173,16 @@ const Profile = () => {
                 </UserInfoContainer>
 
                 <OtherInfoContainer>
-                    <p className='title'>SBT Gallery</p>
+                    <p className='title'>NFT Gallery</p>
 
                     <SbtGallery>
                         { sbtGallery
                             .sort((a, b) => a.date < b.date ? 1 : -1)
                             .map(sbt => (
                                 <SbtContainer key={sbt.address}>
-                                    <img src='/logo.svg' alt='SBT' />
+                                    <img src={sbt.image} alt='SBT' />
                                     <p style={{ fontWeight: 'bold', marginTop: '1rem', fontSize: '1.8rem' }}>{sbt.name}</p>
-                                    <p style={{ fontSize: '1.4rem' }}>{getShortFormatAddress(sbt.owner)}</p>
+                                    {/* <p style={{ fontSize: '1.4rem' }}>{getShortFormatAddress(sbt.owner)}</p> */}
                                 </SbtContainer>
                             ))
                         }

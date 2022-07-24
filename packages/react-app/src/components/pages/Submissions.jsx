@@ -61,7 +61,7 @@ const Submissions = () => {
             const response = await getAllSubmissionsByTest(id);
 
             const newSubmissions = await Promise.all(
-                response.map(item => getSubmissionContent(item.cidSubmission, item.result))
+                response.map(item => getSubmissionContent(item.account, item.result, item.cidSubmission))
             );
             
             setSubmissions(newSubmissions);
@@ -71,7 +71,7 @@ const Submissions = () => {
         }
     }
 
-    const getSubmissionContent = async (submissionCid, result) => {
+    const getSubmissionContent = async (submissionOwner, result, submissionCid) => {
         
         try {
 
@@ -81,6 +81,7 @@ const Submissions = () => {
             submission.date = new Date(submission.date);
 
             // Hardcoded
+            submission.submissionOwner = submissionOwner;
             submission.user = 'Todo Name';
             submission.username = 'Todo Username';
             submission.transaction = 'Todo Transaction';
@@ -127,18 +128,20 @@ const Submissions = () => {
                             .map(item => (
                             <tr key={item.uid}>
                                 <Cell>
-                                    <UserContainer>
-                                        <AccountCircleIcon
-                                            style={{
-                                                fontSize: 40,
-                                            }}
-                                        />
+                                    <Link to={`/profile/${item.submissionOwner}`} style={{ textDecoration: 'none', color: '#808080' }}>
+                                        <UserContainer>
+                                            <AccountCircleIcon
+                                                style={{
+                                                    fontSize: 40,
+                                                }}
+                                            />
 
-                                        <div>
-                                            <p className='name'>{item.user}</p>
-                                            <p className='username'>@{item.user.replace(' ', '_')}</p>
-                                        </div>
-                                    </UserContainer>
+                                            <div>
+                                                <p className='name'>{item.user}</p>
+                                                <p className='username'>@{item.user.replace(' ', '_')}</p>
+                                            </div>
+                                        </UserContainer>
+                                    </Link>
                                 </Cell>
                                 <Cell>{getShortFormatAddress(item.transaction)}</Cell>
                                 <Cell>{item.date.toLocaleDateString()}</Cell>

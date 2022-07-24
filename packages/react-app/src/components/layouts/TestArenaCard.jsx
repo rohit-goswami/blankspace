@@ -31,7 +31,7 @@ const Container = styled.div`
 
     .time {
         position: absolute;
-        top: -1rem;
+        top: 0rem;
         right: 0.5rem;
         font-size: 1.2rem;
     }
@@ -47,7 +47,7 @@ const ButtonsContainer = styled.div`
 const TestArenaCard = ({ test }) => {
     return (
         <Container>
-            <img src='./logo.svg' alt='' width={60} />
+            <img src={`https://ipfs.io/ipfs/${test.imageCid}/sbt-image.png`} alt='SBT' width={60} />
             <p className='title'>{test.title}</p>
             <p className='description'>{test.description}</p>
             <p className='time'>{test.minutes} min</p>

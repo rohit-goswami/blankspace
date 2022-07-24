@@ -250,14 +250,10 @@ const TestArenaList = ({ search }) => {
         
         try {
 
-            const [ testContent, imageContent ] =
-                await Promise.all([
-                    retrieveFiles(testCid).then(data => JSON.parse(data)),
-                    retrieveFiles(imageCid)
-                ]);
+            const testContent = await retrieveFiles(testCid).then(data => JSON.parse(data));
 
             testContent.cid = testCid;
-            testContent.image = new File([imageContent], 'sbt-image');
+            testContent.imageCid = imageCid;
 
             return testContent;
 
