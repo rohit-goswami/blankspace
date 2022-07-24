@@ -17,6 +17,14 @@ async function main() {
 	await test.deployed();
 
 	console.log("Contract test deployed at :", test.address);
+
+	
+	// SBT
+	const SBT = await ethers.getContractFactory("SBT");
+	const sbt = await SBT.deploy();
+	await sbt.deployed();
+
+	console.log("Contract SBT deployed at :", sbt.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
