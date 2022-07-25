@@ -6,7 +6,7 @@
 
 We are trying to bridge the gap between organizations and skilled people using Blockchain. 
 
-All the Smart Contracts have been deployed to Polygon Mumbai Testnet, so use mumbai testnet in metamask to access the festures of the website.
+All the Smart Contracts have been deployed to Polygon Mumbai Testnet, so use mumbai testnet in metamask to access the features of the website.
 
 | Contract |Address |
 | --- | --- |
@@ -18,6 +18,12 @@ https://blankspace-alpha.on.fleek.co/
 
 ### Whitepaper 
 https://drive.google.com/file/d/15tdHIoT6WHYc18UGG2sXnA_Aih7zS0M5/view?usp=sharing
+
+## [ NOTE ]
+
+In order to create a test, your wallet address has to be in the whitelist, if you want to try to create a test in PoS-Arena, email your wallet address and we will add it immediately. 
+
+Email: lynus.mascot@gmail.com
 
 ## Installation
 
