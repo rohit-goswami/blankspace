@@ -115,7 +115,7 @@ const Header = () => {
 
                     <Nav>
                         <NavItem to='/home'>Home</NavItem>
-                        <NavItem to='/pos-arena'>Test Arena</NavItem>
+                        <NavItem to='/pos-arena'>PoS-Arena</NavItem>
                     </Nav>
 
                     <DivFlexCenter>
