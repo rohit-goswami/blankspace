@@ -6,12 +6,18 @@
 
 We are trying to bridge the gap between organizations and skilled people using Blockchain. 
 
-All the Smart Contracts have been deployed to Polygon Mumbai Testnet
+All the Smart Contracts have been deployed to Polygon Mumbai Testnet, so use mumbai testnet in metamask to access the festures of the website.
 
 | Contract |Address |
 | --- | --- |
 | Interface | 0x2B3283c1FB6cD361ACd3a837F8AB6BDD822531B6 |
 
+### Fleek Deployment 
+
+https://blankspace-alpha.on.fleek.co/
+
+### Whitepaper 
+https://drive.google.com/file/d/15tdHIoT6WHYc18UGG2sXnA_Aih7zS0M5/view?usp=sharing
 
 ## Installation
 
