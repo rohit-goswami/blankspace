@@ -6,6 +6,12 @@
 
 We are trying to bridge the gap between organizations and skilled people using Blockchain. 
 
+All the Smart Contracts have been deployed to Polygon Mumbai Testnet
+
+| Contract |Address |
+| --- | --- |
+| Interface | 0x2B3283c1FB6cD361ACd3a837F8AB6BDD822531B6 |
+
 
 ## Installation
 
