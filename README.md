@@ -55,3 +55,8 @@ npm run deploy
 ```
 npm run start
 ```
+## License
+
+© Jinzhu, 2013~time.Now
+
+Released under the [MIT License](https://github.com/go-gorm/gorm/blob/master/License)
