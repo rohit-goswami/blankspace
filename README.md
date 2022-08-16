@@ -57,6 +57,6 @@ npm run start
 ```
 ## License
 
-© Jinzhu, 2013~time.Now
+Copyright (c) 2022 Rohit Goswami
 
 Released under the [MIT License](https://github.com/go-gorm/gorm/blob/master/License)
